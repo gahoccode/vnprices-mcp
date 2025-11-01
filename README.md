@@ -154,7 +154,11 @@ If you modify `server.py` or other files:
 cd vnprices-mcp
 
 # 2. Rebuild Docker image
-docker build --no-cache -t vnprices-mcp:latest .
+docker build -t vnprices-mcp:latest .
+docker build -t mcp-gateway .
+
+# 2. Stop and remove old gateway container
+docker stop mcp-gateway && docker rm mcp-gateway
 
 # 3. Verify new image
 docker images | grep vnprices-mcp
@@ -162,35 +166,17 @@ docker images | grep vnprices-mcp
 # 4. Check image ID changed
 docker images vnprices-mcp
 
-# 5. Restart Claude Desktop completely
+# 5. Run gateway
+docker run -d \
+  --name mcp-gateway \
+  -v $(pwd)/catalogs:/mcp/catalogs \
+  -v $(pwd)/registry.yaml:/mcp/registry.yaml \
+  -v $(pwd)/config.yaml:/mcp/config.yaml \
+  -p 3000:3000 \
+  mcp-gateway
+
+# 6. Restart Claude Desktop completely
 # Quit (Cmd+Q) and restart
-```
-
-### Testing Gateway Manually
-
-Test if the gateway can start and recognize your server:
-```bash
-# Run gateway manually (test mode)
-docker run -i --rm \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -v ~/.docker/mcp:/mcp \
-  docker/mcp-gateway \
-  --catalog=/mcp/catalogs/docker-mcp.yaml \
-  --catalog=/mcp/catalogs/custom.yaml \
-  --config=/mcp/config.yaml \
-  --registry=/mcp/registry.yaml \
-  --transport=stdio \
-  --verbose
-
-# Press Ctrl+C to stop
-```
-
-**Expected output:**
-```
-- Reading configuration...
-- Enabled servers: vnprices
-- Listing MCP tools...
-> 4 tools listed
 ```
 
 ### View Live Logs
@@ -205,17 +191,6 @@ docker logs -f <container-id>
 
 # Or in one command
 docker logs -f $(docker ps -q -f ancestor=docker/mcp-gateway)
-```
-
-### Check Server Container
-
-When Claude calls a tool, your server container should spin up:
-```bash
-# List all containers (including stopped ones)
-docker ps -a | grep vnprices
-
-# View server logs
-docker logs <vnprices-container-id>
 ```
 
 ### Clean Up Old Containers
