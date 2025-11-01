@@ -59,7 +59,19 @@ vnprices-mcp/
 
 ## Configuration
 
-### Claude Desktop Setup
+### Step 1: Copy Catalog File
+
+First, copy the vnstock catalog to the MCP catalogs directory:
+
+```bash
+# Create the catalogs directory if it doesn't exist
+mkdir -p ~/.docker/mcp/catalogs
+
+# Copy the catalog file
+cp vnstock-catalog.yaml ~/.docker/mcp/catalogs/
+```
+
+### Step 2: Claude Desktop Setup
 
 Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
