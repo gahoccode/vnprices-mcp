@@ -59,9 +59,18 @@ vnprices-mcp/
 
 ## Configuration
 
-### Step 1: Copy Catalog File
+### Step 1: Clone the Repository
 
-First, copy the vnstock catalog to the MCP catalogs directory:
+First, clone this repository:
+
+```bash
+git clone https://github.com/gahoccode/vnprices-mcp.git
+cd vnprices-mcp
+```
+
+### Step 2: Copy Configuration Files
+
+Copy the vnstock catalog and configuration files to the MCP directory:
 
 ```bash
 # Create the catalogs directory if it doesn't exist
@@ -77,7 +86,7 @@ cp config.yaml ~/.docker/mcp/config.yaml
 cp registry.yaml ~/.docker/mcp/registry.yaml
 ```
 
-### Step 2: Claude Desktop Setup
+### Step 3: Claude Desktop Setup
 
 Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
