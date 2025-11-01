@@ -289,6 +289,19 @@ If you get wordcloud build errors:
 ```bash
 # Check system dependencies are installed
 docker build --no-cache --progress=plain -t vnprices-mcp:latest . 2>&1 | grep -A 10 "wordcloud"
+
+#Check Dockerfile 
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    build-essential \
+    python3-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libjpeg-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 ```
 
 The Dockerfile should already have all necessary dependencies.
