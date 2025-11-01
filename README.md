@@ -27,7 +27,7 @@ Fetch historical forex exchange rate data (e.g., USDVND, EURVND).
 Fetch historical cryptocurrency price data (e.g., BTC, ETH).
 
 ### 4. `get_index_history`
-Fetch historical index data for Vietnamese (VNINDEX, HNXINDEX) and international indices (DJI, SPX, IXIC).
+Fetch historical index data for Vietnamese (VNINDEX, HNXINDEX)
 
 ## Prerequisites
 
