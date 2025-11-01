@@ -79,6 +79,42 @@ vnprices-mcp/
 └── README.md          # This file
 ```
 
+## Configuration
+
+### Claude Desktop Setup
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "mcp-gateway": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-v", "/var/run/docker.sock:/var/run/docker.sock",
+        "-v", "/Users/YOUR_USERNAME/.docker/mcp:/mcp",
+        "docker/mcp-gateway",
+        "--catalog=/mcp/catalogs/docker-mcp.yaml",
+        "--catalog=/mcp/catalogs/vnstock-catalog.yaml",
+        "--config=/mcp/config.yaml",
+        "--registry=/mcp/registry.yaml",
+        "--transport=stdio"
+      ]
+    }
+  }
+}
+```
+
+**Important:** Replace `YOUR_USERNAME` with your actual macOS username.
+
+After configuration:
+1. Quit Claude Desktop completely (Cmd+Q on macOS)
+2. Restart Claude Desktop
+3. Wait for it to fully load
+
 ## Usage Examples
 
 Open Claude Desktop and try these commands:
