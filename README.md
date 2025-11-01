@@ -177,7 +177,7 @@ registry:
     dateAdded: "2025-01-24T00:00:00Z"
     image: vnprices-mcp:latest
     ref: ""
-    readme: "https://vnstock.site"
+    readme: "https://vnstocks.com/docs/vnstock/thong-ke-gia-lich-su"
     toolsUrl: ""
     source: "https://github.com/thinh-vu/vnstock"
     upstream: ""
@@ -599,7 +599,7 @@ tools:
 
 ## References
 
-- [vnstock3 Documentation](https://vnstock.site)
+- [vnstock3 Documentation](https://vnstocks.com/docs/vnstock/thong-ke-gia-lich-su)
 - [Model Context Protocol](https://modelcontextprotocol.io)
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 - [Docker MCP Gateway](https://github.com/docker/mcp-gateway)

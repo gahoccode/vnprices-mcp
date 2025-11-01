@@ -1,0 +1,179 @@
+# VNStock MCP Server
+
+> MCP server providing Vietnamese financial market data through Claude Desktop via vnstock3
+
+## Overview
+
+VNStock MCP Server is a containerized Model Context Protocol (MCP) server that integrates Vietnamese financial market data with Claude Desktop. It provides historical price data for Vietnamese stocks, forex rates, cryptocurrencies, and international indices using the vnstock3 library.
+
+The server runs as an isolated Docker container via MCP Gateway and uses stdio transport to communicate with Claude Desktop.
+
+## Available Tools
+
+### get_stock_history
+
+Fetch historical stock price data for Vietnamese stocks.
+
+**Parameters:**
+- `symbol` (string, required): Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
+- `start` (string, required): Start date in YYYY-MM-DD format (e.g., '2024-01-01')
+- `end` (string, required): End date in YYYY-MM-DD format (e.g., '2024-12-31')
+- `interval` (string, optional): Time interval - '1D' (daily), '1W' (weekly), '1M' (monthly). Default: '1D'
+- `source` (string, optional): Data source. Default: 'VCI'
+
+**Returns:** JSON string containing OHLCV data (Open, High, Low, Close, Volume) with dates
+
+**Example Query:**
+```
+Get VCI stock prices from January 1, 2024 to December 31, 2024
+```
+
+**Data Source:** VCI (Viet Capital Securities)
+
+### get_forex_history
+
+Fetch historical forex exchange rate data.
+
+**Parameters:**
+- `symbol` (string, required): Forex pair symbol (e.g., 'USDVND', 'EURVND', 'JPYVND')
+- `start` (string, required): Start date in YYYY-MM-DD format
+- `end` (string, required): End date in YYYY-MM-DD format
+- `interval` (string, optional): Time interval - '1D', '1W', '1M'. Default: '1D'
+
+**Returns:** JSON string containing OHLC data (Open, High, Low, Close) with dates
+
+**Example Query:**
+```
+Show me USDVND exchange rates from 2024-06-01 to 2024-12-31
+```
+
+**Data Source:** MSN Finance
+
+### get_crypto_history
+
+Fetch historical cryptocurrency price data.
+
+**Parameters:**
+- `symbol` (string, required): Cryptocurrency symbol (e.g., 'BTC', 'ETH', 'BNB')
+- `start` (string, required): Start date in YYYY-MM-DD format
+- `end` (string, required): End date in YYYY-MM-DD format
+- `interval` (string, optional): Time interval - '1D', '1W', '1M'. Default: '1D'
+
+**Returns:** JSON string containing OHLCV data (Open, High, Low, Close, Volume) with dates
+
+**Example Query:**
+```
+Get Bitcoin price history from 2024-01-01 to 2024-12-31
+```
+
+**Data Source:** MSN Finance
+
+### get_index_history
+
+Fetch historical index data for both Vietnamese and international indices.
+
+**Parameters:**
+- `symbol` (string, required): Index symbol
+  - Vietnamese: 'VNINDEX', 'HNXINDEX', 'UPCOMINDEX'
+  - International: 'DJI' (Dow Jones), 'IXIC' (Nasdaq), 'SPX' (S&P 500), 'FTSE' (FTSE 100), etc.
+- `start` (string, required): Start date in YYYY-MM-DD format
+- `end` (string, required): End date in YYYY-MM-DD format
+- `interval` (string, optional): Time interval - '1D', '1W', '1M'. Default: '1D'
+
+**Returns:** JSON string containing OHLCV data with dates
+
+**Example Queries:**
+```
+Retrieve S&P 500 index data for 2024
+Get VNINDEX data from 2024-01-01 to 2024-12-31
+```
+
+**Data Source:** Hybrid routing
+- Vietnamese indices (VNINDEX, HNXINDEX, UPCOMINDEX): VCI source
+- International indices: MSN Finance
+
+## Data Sources
+
+The server uses two data sources via vnstock3:
+
+1. **VCI (Viet Capital Securities)**: Vietnamese stocks and indices
+   - Used by: `get_stock_history()`, Vietnamese indices in `get_index_history()`
+   - Implementation: `Quote` class from vnstock3
+
+2. **MSN Finance**: Forex, crypto, and international indices
+   - Used by: `get_forex_history()`, `get_crypto_history()`, international indices in `get_index_history()`
+   - Implementation: `Vnstock().fx`, `Vnstock().crypto`, `Vnstock().world_index`
+
+## Technical Details
+
+- **Protocol**: Model Context Protocol (MCP) 2025-06-18
+- **Framework**: FastMCP (MCP SDK 1.2.0+)
+- **Runtime**: Python 3.11 in Docker container
+- **Data Library**: vnstock3 3.2.0+
+- **Data Processing**: pandas 2.0.0+
+- **Transport**: stdio (Standard Input/Output)
+- **Deployment**: Docker containerized, ~1.2GB image size
+- **Architecture**: Stateless - each tool invocation creates a fresh container instance
+
+## Usage Patterns
+
+### Date Format
+All dates must be in `YYYY-MM-DD` format:
+- Valid: '2024-01-01', '2024-12-31'
+- Invalid: '01/01/2024', '2024-1-1', '01-01-2024'
+
+### Interval Options
+- `'1D'`: Daily data (default)
+- `'1W'`: Weekly data
+- `'1M'`: Monthly data
+
+### Common Symbol Formats
+
+**Vietnamese Stocks**: 3-letter uppercase (VCI, VNM, HPG, FPT, etc.)
+
+**Forex Pairs**: 6-letter format with VND (USDVND, EURVND, JPYVND, etc.)
+
+**Cryptocurrencies**: Standard symbols (BTC, ETH, BNB, XRP, etc.)
+
+**Vietnamese Indices**:
+- VNINDEX: Ho Chi Minh Stock Exchange
+- HNXINDEX: Hanoi Stock Exchange
+- UPCOMINDEX: UPCoM Index
+
+**International Indices**:
+- DJI: Dow Jones Industrial Average
+- IXIC: Nasdaq Composite
+- SPX: S&P 500
+- FTSE: FTSE 100
+- N225: Nikkei 225
+- HSI: Hang Seng Index
+
+### Error Handling
+All tools return error messages as strings when exceptions occur. Errors are formatted as:
+```
+Error: <error description>
+```
+
+## Integration
+
+### Claude Desktop
+Configure in `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) to use MCP Gateway.
+
+### MCP Gateway
+Requires Docker MCP Gateway configuration at:
+- `~/.docker/mcp/config.yaml`: Server enablement
+- `~/.docker/mcp/catalogs/custom.yaml`: Server definition
+- `~/.docker/mcp/registry.yaml`: Registry entries
+
+### Container Execution
+Each tool call spawns an isolated Docker container running `vnprices-mcp:latest` image. Containers are stateless and terminate after returning results.
+
+## References
+
+- vnstock3 Documentation: https://vnstocks.com/docs/vnstock/thong-ke-gia-lich-su
+- vnstock Historical Prices Guide: https://github.com/gahoccode/docs/blob/main/vnstock/historical_prices.md
+- vnstock VCI Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/vci/quote.py
+- vnstock MSN Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/msn/quote.py
+- Model Context Protocol: https://modelcontextprotocol.io
+- MCP Python SDK: https://github.com/modelcontextprotocol/python-sdk
+- Docker MCP Gateway: https://github.com/docker/mcp-gateway
