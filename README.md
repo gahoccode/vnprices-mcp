@@ -69,6 +69,9 @@ mkdir -p ~/.docker/mcp/catalogs
 
 # Copy the catalog file
 cp vnstock-catalog.yaml ~/.docker/mcp/catalogs/custom.yaml
+
+# Copy the config file
+cp config.yaml ~/.docker/mcp/config.yaml
 ```
 
 ### Step 2: Claude Desktop Setup
