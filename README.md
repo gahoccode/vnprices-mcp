@@ -56,9 +56,15 @@ Fetch historical international index data.
 
 ## Prerequisites
 
-- **Docker Desktop** (or Docker Engine)
+- **Docker Desktop** (or Docker Engine) - [Download Docker Desktop](https://docs.docker.com/get-started/get-docker/)
 - **Claude Desktop** application
 - **macOS, Windows, or Linux**
+
+**vnstock3 Documentation:**
+- [vnstock3 Documentation](https://vnstocks.com/docs/vnstock/thong-ke-gia-lich-su)
+- [vnstock Historical Prices Guide](https://github.com/gahoccode/docs/blob/main/vnstock/historical_prices.md)
+- [vnstock VCI Quote Source](https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/vci/quote.py)
+- [vnstock MSN Quote Source](https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/msn/quote.py)
 
 ## Project Structure
 ```
@@ -344,7 +350,7 @@ Get Bitcoin price history from 2024-01-01 to 2024-12-31
 
 ### Fetch Index Data
 ```
-Retrieve S&P 500 index data for 2024
+Retrieve VNINDEX data for 2024
 ```
 
 ## Rebuild & Test
