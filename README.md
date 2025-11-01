@@ -70,6 +70,13 @@ Fetch historical international index data.
 - [vnstock VCI Quote Source](https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/vci/quote.py)
 - [vnstock MSN Quote Source](https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/msn/quote.py)
 
+## Tutorial
+
+Besides the docs, I highly recommend watching this tutorial and following NetworkChuck's instructions. This guy is awesome!
+
+- [Docker MCP Tutorial by NetworkChuck](https://www.youtube.com/watch?v=GuTcle5edjk&t=1349s)
+- [NetworkChuck's Docker MCP Example](https://github.com/theNetworkChuck/docker-mcp-tutorial)
+
 ## Project Structure
 ```
 vnprices-mcp/
