@@ -177,3 +177,8 @@ Each tool call spawns an isolated Docker container running `vnprices-mcp:latest`
 - Model Context Protocol: https://modelcontextprotocol.io
 - MCP Python SDK: https://github.com/modelcontextprotocol/python-sdk
 - Docker MCP Gateway: https://github.com/docker/mcp-gateway
+
+## Tutorials
+
+- Docker MCP Tutorial by NetworkChuck: https://www.youtube.com/watch?v=GuTcle5edjk&t=1349s
+- NetworkChuck's Docker MCP Example: https://github.com/theNetworkChuck/docker-mcp-tutorial
