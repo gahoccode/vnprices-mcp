@@ -270,13 +270,6 @@ docker run -i --rm \
 cat ~/Library/Application\ Support/Claude/claude_desktop_config.json | python3 -m json.tool
 ```
 
-**Check file permissions:**
-```bash
-ls -la ~/.docker/mcp/
-chmod 644 ~/.docker/mcp/config.yaml
-chmod 644 ~/.docker/mcp/catalogs/custom.yaml
-```
-
 ### Server Returns Errors
 
 **Check vnstock3 is working:**
