@@ -88,7 +88,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
         "-v", "/Users/YOUR_USERNAME/.docker/mcp:/mcp",
         "docker/mcp-gateway",
         "--catalog=/mcp/catalogs/docker-mcp.yaml",
-        "--catalog=/mcp/catalogs/vnstock-catalog.yaml",
+        "--catalog=/mcp/catalogs/custom.yaml",
         "--config=/mcp/config.yaml",
         "--registry=/mcp/registry.yaml",
         "--transport=stdio"
