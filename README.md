@@ -18,45 +18,16 @@ A Model Context Protocol (MCP) server that provides Vietnamese financial market 
 ## Available Tools
 
 ### 1. `get_stock_history`
-Fetch historical stock price data for Vietnamese stocks.
-
-**Parameters:**
-- `symbol` (string): Stock ticker (e.g., 'VCI', 'VNM', 'HPG')
-- `start` (string): Start date (YYYY-MM-DD)
-- `end` (string): End date (YYYY-MM-DD)
-- `source` (string, optional): Data source (default: 'VCI')
-
-**Returns:** OHLCV data (Open, High, Low, Close, Volume)
+Fetch historical stock price data for Vietnamese stocks (e.g., VCI, VNM, HPG).
 
 ### 2. `get_forex_history`
-Fetch historical forex exchange rate data.
-
-**Parameters:**
-- `symbol` (string): Forex pair (e.g., 'USDVND', 'EURVND')
-- `start` (string): Start date (YYYY-MM-DD)
-- `end` (string): End date (YYYY-MM-DD)
-
-**Returns:** OHLC data (Open, High, Low, Close)
+Fetch historical forex exchange rate data (e.g., USDVND, EURVND).
 
 ### 3. `get_crypto_history`
-Fetch historical cryptocurrency price data.
-
-**Parameters:**
-- `symbol` (string): Crypto symbol (e.g., 'BTC', 'ETH')
-- `start` (string): Start date (YYYY-MM-DD)
-- `end` (string): End date (YYYY-MM-DD)
-
-**Returns:** OHLCV data
+Fetch historical cryptocurrency price data (e.g., BTC, ETH).
 
 ### 4. `get_index_history`
-Fetch historical international index data.
-
-**Parameters:**
-- `symbol` (string): Index symbol (e.g., 'DJI', 'IXIC', 'SPX')
-- `start` (string): Start date (YYYY-MM-DD)
-- `end` (string): End date (YYYY-MM-DD)
-
-**Returns:** OHLCV data
+Fetch historical index data for Vietnamese (VNINDEX, HNXINDEX) and international indices (DJI, SPX, IXIC).
 
 ## Prerequisites
 
