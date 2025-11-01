@@ -1,4 +1,4 @@
-# VNStock MCP Server
+# An MCP Server for the vnstock3 library
 
 A Model Context Protocol (MCP) server that provides Vietnamese financial market data through Claude Desktop. Fetch historical prices for stocks, forex, cryptocurrencies, and international indices using the vnstock3 library.
 
