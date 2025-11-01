@@ -1,0 +1,4 @@
+servers:
+  vnprices:
+    enabled: true
+
