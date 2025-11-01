@@ -1,0 +1,10 @@
+# MCP SDK
+mcp[cli]>=1.2.0
+
+# VNStock library for Vietnamese financial data
+vnstock3>=3.2.0
+
+# Data processing
+pandas>=2.0.0
+
+IPython

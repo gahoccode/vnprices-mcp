@@ -1,0 +1,55 @@
+# Top-level catalog definition
+name: vnstock-catalog
+displayName: Vietnamese Financial Data Tools
+version: 2
+
+# Registry contains all server definitions
+registry:
+  vnprices:
+    # Basic info
+    name: vnprices
+    type: server
+    image: vnprices-mcp:latest
+    
+    # Metadata
+    meta:
+      category: finance
+      tags:
+        - vietnam
+        - stocks
+        - forex
+        - crypto
+        - finance
+    
+    # Display information
+    about:
+      title: "VNStock Price Data"
+      description: "Fetch historical prices for Vietnamese stocks, forex, crypto, and international indices using vnstock3"
+      icon: "https://www.google.com/s2/favicons?domain=vnstock.site&sz=64"
+    
+    # Source information (optional but recommended)
+    source:
+      project: "vnstock3"
+      upstream: "https://github.com/thinh-vu/vnstock"
+    
+    # Runtime configuration
+    run:
+      command:
+        - python3
+        - server.py
+    
+    # Resource limits
+    limits:
+      memory: "1g"
+      cpus: "1"
+    
+    # Tools provided (for documentation)
+    tools:
+      - name: get_stock_history
+        description: "Fetch Vietnamese stock OHLCV data"
+      - name: get_forex_history
+        description: "Fetch forex exchange rate data"
+      - name: get_crypto_history
+        description: "Fetch cryptocurrency price data"
+      - name: get_index_history
+        description: "Fetch international index data"
