@@ -11,6 +11,10 @@ A Model Context Protocol (MCP) server that provides Vietnamese financial market 
 - **Containerized**: Runs as an isolated Docker container via MCP Gateway
 - **Seamless Integration**: Works directly with Claude Desktop
 
+## Quick Deploy
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/gahoccode/vnprices-mcp)
+
 ## Available Tools
 
 ### 1. `get_stock_history`
