@@ -134,11 +134,9 @@ def get_index_history(
         vietnam_indices = ["VNINDEX", "HNXINDEX", "UPCOMINDEX"]
 
         if symbol.upper() in vietnam_indices:
-            # Use VCI source for Vietnamese indices
-            stock = Vnstock().stock(symbol="VCI", source="VCI")
-            df = stock.quote.history(
-                symbol=symbol, start=start_date, end=end_date, interval=interval
-            )
+            # Use Quote with VCI source for Vietnamese indices
+            quote = Quote(symbol=symbol, source="VCI")
+            df = quote.history(start=start_date, end=end_date, interval=interval)
         else:
             # Use MSN source for international indices
             index = Vnstock().world_index(symbol=symbol, source="MSN")
@@ -155,11 +153,6 @@ def get_index_history(
         return f"Error fetching index data: {str(e)}"
 
 
-def main():
-    """Entry point for the MCP server."""
+if __name__ == "__main__":
     # Run server with stdio transport (default)
     mcp.run()
-
-
-if __name__ == "__main__":
-    main()
