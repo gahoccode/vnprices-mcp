@@ -275,3 +275,20 @@ Hosts: LLM applications that initiate connections
 Clients: Connectors within the host application
 Servers: Services that provide context and capabilities
 - So internal pandas dataframe must be converted to json string for proper communication
+- FastMCP's availability is ensured by the mcp[cli]>=1.2.0
+### Logging in MCP Servers
+- **STDIO-based servers**: Avoid writing to stdout using functions like `print()` in Python.
+- **HTTP-based servers**: Standard output logging is acceptable.
+
+### Best Practices
+1. Use a logging library that writes to stderr or files.
+2. Follow specific tool naming conventions.
+
+```python
+# ❌ Bad (STDIO)
+print("Processing request")
+
+# ✅ Good (STDIO)
+import logging
+logging.info("Processing request")
+```
