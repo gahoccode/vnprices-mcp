@@ -89,27 +89,26 @@ def tool_name(param: str) -> str:
 - Vietnamese indices (VNINDEX, HNXINDEX, UPCOMINDEX): Use `Quote` class (VCI source)
 - International indices (DJI, SPX, IXIC, etc.): Use `Vnstock().world_index` (MSN source)
 
-### Key Files
+### Key Implementation Details
 
 **server.py (~159 lines)** - Core MCP server with 4 tools:
-- `get_stock_history()` - Vietnamese stocks via VCI source
-- `get_forex_history()` - Exchange rates via MSN source
-- `get_crypto_history()` - Cryptocurrency via MSN source
-- `get_index_history()` - Indices (hybrid VCI/MSN routing)
+- `get_stock_history()` (lines 14-43) - Vietnamese stocks via VCI source
+- `get_forex_history()` (lines 46-77) - Exchange rates via MSN source
+- `get_crypto_history()` (lines 80-111) - Cryptocurrency via MSN source
+- `get_index_history()` (lines 114-153) - Indices (hybrid VCI/MSN routing)
 
-All functions accept:
-- `start`/`end` dates (YYYY-MM-DD format)
-- `interval` parameter (1D, 1W, 1M)
-- Return JSON strings
-- Include error handling with try-catch
+All functions:
+- Accept `start`/`end` dates (YYYY-MM-DD format), `interval` parameter (1D, 1W, 1M)
+- Return JSON strings via `df.to_json(orient="records", date_format="iso", indent=2)`
+- Include error handling with try-catch blocks
 
-**Dockerfile** - Multi-stage build with system dependencies for wordcloud/vnstock3:
+**Dockerfile** - System dependencies required for wordcloud/vnstock3:
 - Base: `python:3.11-slim`
-- System deps: gcc, build-essential, image libraries (libfreetype6-dev, libpng-dev, libjpeg-dev)
+- System deps: gcc, g++, build-essential, python3-dev, libfreetype6-dev, libpng-dev, libjpeg-dev, pkg-config
 - Python deps: requirements.txt
 - Entrypoint: `python3 server.py`
 
-**requirements.txt** - Must stay synchronized with Dockerfile
+**requirements.txt** - Must stay synchronized with Dockerfile system dependencies
 
 ## Configuration Files
 
@@ -119,8 +118,7 @@ All functions accept:
 ├── config.yaml                      # Server enablement
 ├── registry.yaml                    # Registry entries
 └── catalogs/
-    ├── docker-mcp.yaml             # Docker MCP catalog
-    └── custom.yaml                 # Server definitions
+    └── custom.yaml                 # Server definitions (copied from vnstock-catalog.yaml)
 ```
 
 **Claude Desktop Config:**
@@ -128,7 +126,7 @@ All functions accept:
 ~/Library/Application Support/Claude/claude_desktop_config.json
 ```
 
-**Important**: These config files are managed outside the repository. When modifying tools, remember to update `~/.docker/mcp/catalogs/custom.yaml` to reflect changes.
+**Critical**: These config files are managed outside the repository. When adding/modifying tools in server.py, you must also update `~/.docker/mcp/catalogs/custom.yaml` to reflect the changes.
 
 ## Data Flow
 
@@ -139,27 +137,28 @@ All functions accept:
 5. Data processed via pandas → JSON string
 6. Return path: Container → Gateway → Claude Desktop
 
-## Common Development Tasks
+## Adding a New Tool
 
-### Adding a New Tool
-
-1. **Update server.py** with new `@mcp.tool()` decorator function
+1. **Update server.py** with new `@mcp.tool()` decorator function following the pattern above
 2. **Rebuild container**: `docker build --no-cache -t vnprices-mcp:latest .`
 3. **Update catalog** at `~/.docker/mcp/catalogs/custom.yaml`:
    ```yaml
    tools:
      - name: your_new_tool
+       description: "Brief description"
    ```
 4. **Restart Claude Desktop** (Cmd+Q, then reopen)
 
-### Debugging Tools Not Appearing
+## Debugging
 
-1. Check `~/.docker/mcp/config.yaml` has vnprices enabled
+### Tools Not Appearing
+
+1. Check `~/.docker/mcp/config.yaml` has `vnprices: enabled: true`
 2. View gateway logs: `docker logs -f $(docker ps -q -f ancestor=docker/mcp-gateway)`
 3. Look for: "Enabled servers: vnprices" and "X tools listed"
 4. Verify image exists: `docker images | grep vnprices-mcp`
 
-### Debugging Data Fetching Issues
+### Data Fetching Issues
 
 Test vnstock3 directly in container:
 ```bash
@@ -183,7 +182,7 @@ If wordcloud/vnstock3 dependencies fail:
 docker build --no-cache --progress=plain -t vnprices-mcp:latest . 2>&1 | grep -i error
 ```
 
-System dependencies in Dockerfile should handle all build requirements. If fails, check apt-get install section includes: gcc, g++, build-essential, python3-dev, libfreetype6-dev, libpng-dev, libjpeg-dev, pkg-config.
+System dependencies in Dockerfile should handle all build requirements. If fails, verify apt-get install section includes: gcc, g++, build-essential, python3-dev, libfreetype6-dev, libpng-dev, libjpeg-dev, pkg-config.
 
 ## Technical Constraints
 
@@ -197,6 +196,9 @@ System dependencies in Dockerfile should handle all build requirements. If fails
 ## References
 
 - vnstock3 Documentation: https://vnstocks.com/docs/vnstock/thong-ke-gia-lich-su
+- vnstock Historical Prices Guide: https://github.com/gahoccode/docs/blob/main/vnstock/historical_prices.md
+- vnstock VCI Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/vci/quote.py
+- vnstock MSN Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/msn/quote.py
 - Model Context Protocol: https://modelcontextprotocol.io
 - FastMCP SDK: https://github.com/modelcontextprotocol/python-sdk
 - Docker MCP Gateway: https://github.com/docker/mcp-gateway
