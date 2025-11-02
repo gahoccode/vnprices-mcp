@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2025-11-02
+
+### Added
+- `get_company_info` tool for comprehensive company information access (9 types of data)
+- Company overview, shareholders, officers, subsidiaries, events, news, reports, ratio_summary, trading_stats
+- Enhanced Vietnamese stock market analysis capabilities with fundamental data
+- Company information usage examples for all 9 data types
+- Logging guidelines for MCP servers in CLAUDE.md
+- FastMCP dependency clarification in documentation
+
+### Changed
+- Total tools count from 12 to 13 (4 price + 4 financial + 1 dividend + 1 company + 3 commodity/exchange)
+- Updated README.md with new Company Information Tools section
+- Enhanced tool categorization and documentation structure
+- Rebuilt Docker image with new company information functionality (image ID: cd1542af2688)
+
+### Documentation
+- Added comprehensive company information tool examples
+- Updated available tools section with get_company_info
+- Enhanced usage examples with company analysis scenarios
+- Updated technical details to reflect 13 total tools
+- Added MCP server logging best practices
+
 ## [0.4.0] - 2025-11-02
 
 ### Added
@@ -104,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Requirements.txt with core dependencies
 - .gitignore for project cleanliness
 
-[Unreleased]: https://github.com/gahoccode/vnprices-mcp/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/gahoccode/vnprices-mcp/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.1.0...v0.2.0
