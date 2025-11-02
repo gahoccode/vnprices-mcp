@@ -17,17 +17,33 @@ A Model Context Protocol (MCP) server that provides Vietnamese financial market 
 
 ## Available Tools
 
-### 1. `get_stock_history`
+### Price History Tools
+
+#### 1. `get_stock_history`
 Fetch historical stock price data for Vietnamese stocks (e.g., VCI, VNM, HPG).
 
-### 2. `get_forex_history`
+#### 2. `get_forex_history`
 Fetch historical forex exchange rate data (e.g., USDVND, EURVND).
 
-### 3. `get_crypto_history`
+#### 3. `get_crypto_history`
 Fetch historical cryptocurrency price data (e.g., BTC, ETH).
 
-### 4. `get_index_history`
-Fetch historical index data for Vietnamese (VNINDEX, HNXINDEX)
+#### 4. `get_index_history`
+Fetch historical index data for Vietnamese (VNINDEX, HNXINDEX) and international indices.
+
+### Financial Statement Tools (Annual Data)
+
+#### 5. `get_income_statement`
+Fetch annual income statement (profit & loss) for Vietnamese stocks.
+
+#### 6. `get_balance_sheet`
+Fetch annual balance sheet for Vietnamese stocks.
+
+#### 7. `get_cash_flow`
+Fetch annual cash flow statement for Vietnamese stocks.
+
+#### 8. `get_financial_ratios`
+Fetch annual financial ratios (P/B, ROE, etc.) for Vietnamese stocks.
 
 ## Prerequisites
 
@@ -147,6 +163,23 @@ Get Bitcoin price history from 2024-01-01 to 2024-12-31
 ### Fetch Index Data
 ```
 Retrieve VNINDEX data for 2024
+```
+
+### Fetch Financial Statements
+```
+Get the annual income statement for VCI stock
+```
+
+```
+Show me the balance sheet for HPG in Vietnamese
+```
+
+```
+Retrieve cash flow statement for VNM
+```
+
+```
+Get financial ratios for FPT stock
 ```
 
 ## Rebuild & Test
@@ -379,10 +412,14 @@ tools:
 - **VNStock**: 3.2.0+
 - **Transport**: stdio (Standard Input/Output)
 - **Container Size**: ~1.2GB
+- **Total Tools**: 8 (4 price history + 4 financial statements)
 
 ## References
 
 - [vnstock3 Documentation](https://vnstocks.com/docs/vnstock/thong-ke-gia-lich-su)
+- [vnstock Historical Prices Guide](https://github.com/gahoccode/docs/blob/main/vnstock/historical_prices.md)
+- [vnstock Financial Statements Guide](https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements.md)
+- [vnstock Financial Statements Data Types](https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements_dtypes.md)
 - [Model Context Protocol](https://modelcontextprotocol.io)
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 - [Docker MCP Gateway](https://github.com/docker/mcp-gateway)

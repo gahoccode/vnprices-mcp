@@ -24,8 +24,26 @@ docker images | grep vnprices-mcp
 # Test vnstock3 installation in container
 docker run -it vnprices-mcp:latest python3 -c "from vnstock import Quote; print('OK')"
 
-# Test data fetching
+# Test price data fetching
 docker run -it vnprices-mcp:latest python3 -c "from vnstock import Quote; q = Quote('VCI'); print(q.history('2024-01-01', '2024-12-31'))"
+
+# Test financial statement data fetching
+docker run -it vnprices-mcp:latest python3 << 'EOF'
+from vnstock import Vnstock
+stock = Vnstock().stock('VCI', source='VCI')
+income = stock.finance.income_statement(period='year', lang='en')
+print(income.head())
+EOF
+
+# Test financial ratios with flattening
+docker run -it vnprices-mcp:latest python3 << 'EOF'
+from vnstock import Vnstock
+from vnstock.core.utils.transform import flatten_hierarchical_index
+stock = Vnstock().stock('VCI', source='VCI')
+ratios = stock.finance.ratio(period='year', lang='en')
+flattened = flatten_hierarchical_index(ratios, separator="_", handle_duplicates=True, drop_levels=0)
+print(flattened.head())
+EOF
 
 # Test gateway manually (debug mode)
 docker run -i --rm \
@@ -91,16 +109,30 @@ def tool_name(param: str) -> str:
 
 ### Key Implementation Details
 
-**server.py (~159 lines)** - Core MCP server with 4 tools:
+**server.py (~288 lines)** - Core MCP server with 8 tools:
+
+**Price History Tools:**
 - `get_stock_history()` (lines 14-43) - Vietnamese stocks via VCI source
 - `get_forex_history()` (lines 46-77) - Exchange rates via MSN source
 - `get_crypto_history()` (lines 80-111) - Cryptocurrency via MSN source
 - `get_index_history()` (lines 114-153) - Indices (hybrid VCI/MSN routing)
 
-All functions:
+**Financial Statement Tools (Annual only):**
+- `get_income_statement()` (lines 156-184) - Income statement via VCI source
+- `get_balance_sheet()` (lines 187-215) - Balance sheet via VCI source
+- `get_cash_flow()` (lines 218-246) - Cash flow statement via VCI source
+- `get_financial_ratios()` (lines 249-282) - Financial ratios via VCI source (with MultiIndex flattening)
+
+**Price History functions:**
 - Accept `start`/`end` dates (YYYY-MM-DD format), `interval` parameter (1D, 1W, 1M)
 - Return JSON strings via `df.to_json(orient="records", date_format="iso", indent=2)`
 - Include error handling with try-catch blocks
+
+**Financial Statement functions:**
+- Accept `symbol` (stock ticker), `lang` parameter ('en' or 'vi')
+- Hardcoded to annual data only (`period="year"`)
+- Return all available years of data (typically 10+ years)
+- Special handling for ratios: Apply `flatten_hierarchical_index()` before JSON conversion
 
 **Dockerfile** - System dependencies required for wordcloud/vnstock3:
 - Base: `python:3.11-slim`

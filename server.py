@@ -5,6 +5,7 @@ Provides tools to fetch stock, forex, crypto, and index historical data from vns
 
 from mcp.server.fastmcp import FastMCP
 from vnstock import Vnstock, Quote
+from vnstock.core.utils.transform import flatten_hierarchical_index
 
 # Initialize the MCP server
 mcp = FastMCP("vnprices")
@@ -151,6 +152,135 @@ def get_index_history(
 
     except Exception as e:
         return f"Error fetching index data: {str(e)}"
+
+
+@mcp.tool()
+def get_income_statement(symbol: str, lang: str = "en") -> str:
+    """
+    Get annual income statement (profit & loss) for Vietnamese stocks.
+
+    Args:
+        symbol: Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
+        lang: Language - 'en' (English) or 'vi' (Vietnamese)
+
+    Returns:
+        JSON string with annual income statement data including revenue, expenses,
+        profit metrics, and earnings per share (EPS) for multiple years
+    """
+    try:
+        # Initialize stock with VCI source
+        stock = Vnstock().stock(symbol=symbol.upper(), source="VCI")
+        finance = stock.finance
+
+        # Fetch annual income statement
+        df = finance.income_statement(period="year", lang=lang)
+
+        if df is None or df.empty:
+            return f"No income statement data found for {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching income statement for {symbol}: {str(e)}"
+
+
+@mcp.tool()
+def get_balance_sheet(symbol: str, lang: str = "en") -> str:
+    """
+    Get annual balance sheet for Vietnamese stocks.
+
+    Args:
+        symbol: Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
+        lang: Language - 'en' (English) or 'vi' (Vietnamese)
+
+    Returns:
+        JSON string with annual balance sheet data including assets, liabilities,
+        equity, and detailed financial position metrics for multiple years
+    """
+    try:
+        # Initialize stock with VCI source
+        stock = Vnstock().stock(symbol=symbol.upper(), source="VCI")
+        finance = stock.finance
+
+        # Fetch annual balance sheet
+        df = finance.balance_sheet(period="year", lang=lang)
+
+        if df is None or df.empty:
+            return f"No balance sheet data found for {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching balance sheet for {symbol}: {str(e)}"
+
+
+@mcp.tool()
+def get_cash_flow(symbol: str, lang: str = "en") -> str:
+    """
+    Get annual cash flow statement for Vietnamese stocks.
+
+    Args:
+        symbol: Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
+        lang: Language - 'en' (English) or 'vi' (Vietnamese)
+
+    Returns:
+        JSON string with annual cash flow data including operating, investing,
+        and financing activities for multiple years
+    """
+    try:
+        # Initialize stock with VCI source
+        stock = Vnstock().stock(symbol=symbol.upper(), source="VCI")
+        finance = stock.finance
+
+        # Fetch annual cash flow statement
+        df = finance.cash_flow(period="year", lang=lang)
+
+        if df is None or df.empty:
+            return f"No cash flow data found for {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching cash flow for {symbol}: {str(e)}"
+
+
+@mcp.tool()
+def get_financial_ratios(symbol: str, lang: str = "en") -> str:
+    """
+    Get annual financial ratios and metrics for Vietnamese stocks.
+
+    Args:
+        symbol: Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
+        lang: Language - 'en' (English) or 'vi' (Vietnamese)
+
+    Returns:
+        JSON string with annual financial ratios including P/B (Price-to-Book),
+        ROE (Return on Equity), and other key financial health indicators
+    """
+    try:
+        # Initialize stock with VCI source
+        stock = Vnstock().stock(symbol=symbol.upper(), source="VCI")
+        finance = stock.finance
+
+        # Fetch annual financial ratios
+        df = finance.ratio(period="year", lang=lang)
+
+        if df is None or df.empty:
+            return f"No financial ratio data found for {symbol}"
+
+        # Flatten MultiIndex DataFrame before converting to JSON
+        flattened_df = flatten_hierarchical_index(
+            df, separator="_", handle_duplicates=True, drop_levels=0
+        )
+
+        # Convert to JSON
+        return flattened_df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching financial ratios for {symbol}: {str(e)}"
 
 
 if __name__ == "__main__":
