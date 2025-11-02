@@ -6,6 +6,8 @@ Provides tools to fetch stock, forex, crypto, and index historical data from vns
 from mcp.server.fastmcp import FastMCP
 from vnstock import Vnstock, Quote
 from vnstock.core.utils.transform import flatten_hierarchical_index
+from vnstock.explorer.misc.gold_price import sjc_gold_price, btmc_goldprice
+from vnstock.explorer.misc.exchange_rate import vcb_exchange_rate
 
 # Initialize the MCP server
 mcp = FastMCP("vnprices")
@@ -311,6 +313,82 @@ def get_dividend_history(symbol: str) -> str:
 
     except Exception as e:
         return f"Error fetching dividend history for {symbol}: {str(e)}"
+
+
+@mcp.tool()
+def get_sjc_gold_price(date: str = None) -> str:
+    """
+    Get SJC gold prices (current or historical).
+
+    Args:
+        date: Date in YYYY-MM-DD format (e.g., '2024-01-15').
+              If None, returns current prices. Historical data available from 2016-01-02.
+
+    Returns:
+        JSON string with gold price data including name, branch, buy_price, sell_price, date
+    """
+    try:
+        # Fetch SJC gold prices
+        df = sjc_gold_price(date=date)
+
+        if df is None or df.empty:
+            date_str = date if date else "current date"
+            return f"No SJC gold price data found for {date_str}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching SJC gold prices: {str(e)}"
+
+
+@mcp.tool()
+def get_btmc_gold_price() -> str:
+    """
+    Get current BTMC (Bảo Tín Minh Châu) gold prices.
+
+    Returns:
+        JSON string with gold price data including name, karat, gold_content,
+        buy_price, sell_price, world_price, time
+    """
+    try:
+        # Fetch BTMC gold prices
+        df = btmc_goldprice()
+
+        if df is None or df.empty:
+            return "No BTMC gold price data found"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching BTMC gold prices: {str(e)}"
+
+
+@mcp.tool()
+def get_vcb_exchange_rate(date: str) -> str:
+    """
+    Get VCB (Vietcombank) exchange rates for a specific date.
+
+    Args:
+        date: Date in YYYY-MM-DD format (e.g., '2024-01-15')
+
+    Returns:
+        JSON string with exchange rate data including currency_code, currency_name,
+        buy_cash, buy_transfer, sell, date for 20 major currencies
+    """
+    try:
+        # Fetch VCB exchange rates
+        df = vcb_exchange_rate(date=date)
+
+        if df is None or df.empty:
+            return f"No VCB exchange rate data found for {date}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching VCB exchange rates: {str(e)}"
 
 
 if __name__ == "__main__":

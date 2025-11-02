@@ -63,3 +63,9 @@ registry:
         description: "Fetch annual financial ratios for Vietnamese stocks"
       - name: get_dividend_history
         description: "Fetch complete dividend history for Vietnamese stocks"
+      - name: get_sjc_gold_price
+        description: "Fetch SJC gold prices (current or historical)"
+      - name: get_btmc_gold_price
+        description: "Fetch BTMC gold prices (current only)"
+      - name: get_vcb_exchange_rate
+        description: "Fetch VCB bank exchange rates for a specific date"

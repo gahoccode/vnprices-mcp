@@ -176,9 +176,68 @@ Show me all dividend payments for VCI
 
 **Note:** Returns complete historical records without date filtering. TCBS is the only data source for dividend information.
 
+### get_sjc_gold_price
+
+Fetch SJC gold prices (current or historical).
+
+**Parameters:**
+- `date` (string, optional): Date in YYYY-MM-DD format (e.g., '2024-01-15'). If not specified, returns current prices. Historical data available from 2016-01-02.
+
+**Returns:** JSON string with gold price data including name, branch, buy_price, sell_price, date for 9 gold products
+
+**Example Queries:**
+```
+Get current SJC gold prices
+Show me SJC gold prices for 2024-01-15
+Get SJC gold prices for January 1, 2024
+```
+
+**Data Source:** SJC (Saigon Jewelry Company)
+
+**Note:** SJC is the largest gold trading company in Vietnam. Returns 9 gold products with buy/sell prices.
+
+### get_btmc_gold_price
+
+Fetch current BTMC (Bảo Tín Minh Châu) gold prices.
+
+**Parameters:** None
+
+**Returns:** JSON string with gold price data including name, karat, gold_content, buy_price, sell_price, world_price, time for 49 gold products
+
+**Example Queries:**
+```
+Get BTMC gold prices
+Show me current Bao Tin Minh Chau gold prices
+What are BTMC gold prices right now?
+```
+
+**Data Source:** BTMC (Bảo Tín Minh Châu)
+
+**Note:** BTMC is a major gold jewelry retailer in Vietnam. Returns 49 products with detailed karat ratings, gold content percentages, and world price references. Real-time data only (no historical support).
+
+### get_vcb_exchange_rate
+
+Fetch VCB (Vietcombank) exchange rates for a specific date.
+
+**Parameters:**
+- `date` (string, required): Date in YYYY-MM-DD format (e.g., '2024-01-15')
+
+**Returns:** JSON string with exchange rate data including currency_code, currency_name, buy_cash, buy_transfer, sell, date for 20 major currencies
+
+**Example Queries:**
+```
+Get VCB exchange rates for 2024-12-31
+Show me Vietcombank exchange rates for today
+What are the VCB rates for January 1, 2024?
+```
+
+**Data Source:** VCB (Vietcombank)
+
+**Note:** VCB is the largest commercial bank in Vietnam. Returns rates for 20 major currencies. Distinguishes between cash buying rate and transfer buying rate. Single date only (no range support).
+
 ## Data Sources
 
-The server uses three data sources via vnstock3:
+The server uses six data sources via vnstock3:
 
 1. **VCI (Viet Capital Securities)**: Vietnamese stocks, indices, and financial statements
    - Used by: `get_stock_history()`, `get_index_history()`, all financial statement tools
@@ -192,6 +251,18 @@ The server uses three data sources via vnstock3:
    - Used by: `get_dividend_history()`
    - Implementation: `Vnstock().stock().company` from vnstock3
 
+4. **SJC (Saigon Jewelry Company)**: Gold prices
+   - Used by: `get_sjc_gold_price()`
+   - Implementation: `sjc_gold_price()` from vnstock.explorer.misc.gold_price
+
+5. **BTMC (Bảo Tín Minh Châu)**: Gold prices
+   - Used by: `get_btmc_gold_price()`
+   - Implementation: `btmc_goldprice()` from vnstock.explorer.misc.gold_price
+
+6. **VCB (Vietcombank)**: Bank exchange rates
+   - Used by: `get_vcb_exchange_rate()`
+   - Implementation: `vcb_exchange_rate()` from vnstock.explorer.misc.exchange_rate
+
 ## Technical Details
 
 - **Protocol**: Model Context Protocol (MCP) 2025-06-18
@@ -202,7 +273,7 @@ The server uses three data sources via vnstock3:
 - **Transport**: stdio (Standard Input/Output)
 - **Deployment**: Docker containerized, ~1.2GB image size
 - **Architecture**: Stateless - each tool invocation creates a fresh container instance
-- **Total Tools**: 9 (4 price history + 4 financial statements + 1 dividend)
+- **Total Tools**: 12 (4 price history + 4 financial statements + 1 dividend + 3 commodity/exchange)
 
 ## Usage Patterns
 
@@ -256,8 +327,11 @@ Each tool call spawns an isolated Docker container running `vnprices-mcp:latest`
 - vnstock Financial Statements Guide: https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements.md
 - vnstock Financial Statements Data Types: https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements_dtypes.md
 - vnstock Dividends Guide: https://github.com/gahoccode/docs/blob/main/vnstock/dividends.md
+- vnstock Commodity Prices Guide: https://github.com/gahoccode/docs/blob/main/vnstock/commodity_prices.md
 - vnstock VCI Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/vci/quote.py
 - vnstock MSN Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/msn/quote.py
+- vnstock Gold Price Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/misc/gold_price.py
+- vnstock Exchange Rate Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/misc/exchange_rate.py
 - Model Context Protocol: https://modelcontextprotocol.io
 - MCP Python SDK: https://github.com/modelcontextprotocol/python-sdk
 - Docker MCP Gateway: https://github.com/docker/mcp-gateway
