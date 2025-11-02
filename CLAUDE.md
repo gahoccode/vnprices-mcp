@@ -234,3 +234,4 @@ System dependencies in Dockerfile should handle all build requirements. If fails
 - Model Context Protocol: https://modelcontextprotocol.io
 - FastMCP SDK: https://github.com/modelcontextprotocol/python-sdk
 - Docker MCP Gateway: https://github.com/docker/mcp-gateway
+- Index data is only for Vietnamese market

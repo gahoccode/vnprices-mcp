@@ -29,7 +29,7 @@ Fetch historical forex exchange rate data (e.g., USDVND, EURVND).
 Fetch historical cryptocurrency price data (e.g., BTC, ETH).
 
 #### 4. `get_index_history`
-Fetch historical index data for Vietnamese (VNINDEX, HNXINDEX) and international indices.
+Fetch historical index data for Vietnamese market indices (VNINDEX, HNXINDEX, UPCOMINDEX).
 
 ### Financial Statement Tools (Annual Data)
 
@@ -165,6 +165,10 @@ Get Bitcoin price history from 2024-01-01 to 2024-12-31
 Retrieve VNINDEX data for 2024
 ```
 
+```
+Show me HNXINDEX from January to December 2024
+```
+
 ### Fetch Financial Statements
 ```
 Get the annual income statement for VCI stock
@@ -180,6 +184,14 @@ Retrieve cash flow statement for VNM
 
 ```
 Get financial ratios for FPT stock
+```
+
+```
+Compare revenue and profit data for ACB over the past 5 years
+```
+
+```
+Analyze the debt-to-equity ratio trend for MBB
 ```
 
 ## Rebuild & Test
