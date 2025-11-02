@@ -283,6 +283,36 @@ def get_financial_ratios(symbol: str, lang: str = "en") -> str:
         return f"Error fetching financial ratios for {symbol}: {str(e)}"
 
 
+@mcp.tool()
+def get_dividend_history(symbol: str) -> str:
+    """
+    Get complete dividend history for Vietnamese stocks.
+
+    Args:
+        symbol: Stock ticker symbol (e.g., 'VCI', 'ACB', 'HPG')
+
+    Returns:
+        JSON string with complete dividend history including exercise date,
+        cash year, dividend percentage, and issue method for all historical records
+    """
+    try:
+        # Initialize stock with TCBS source (dividends only available from TCBS)
+        stock = Vnstock().stock(symbol=symbol.upper(), source="TCBS")
+        company = stock.company
+
+        # Fetch dividend history
+        df = company.dividends()
+
+        if df is None or df.empty:
+            return f"No dividend data found for {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching dividend history for {symbol}: {str(e)}"
+
+
 if __name__ == "__main__":
     # Run server with stdio transport (default)
     mcp.run()

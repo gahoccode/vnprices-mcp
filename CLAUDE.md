@@ -109,7 +109,7 @@ def tool_name(param: str) -> str:
 
 ### Key Implementation Details
 
-**server.py (~288 lines)** - Core MCP server with 8 tools:
+**server.py (~314 lines)** - Core MCP server with 9 tools:
 
 **Price History Tools:**
 - `get_stock_history()` (lines 14-43) - Vietnamese stocks via VCI source
@@ -121,7 +121,10 @@ def tool_name(param: str) -> str:
 - `get_income_statement()` (lines 156-184) - Income statement via VCI source
 - `get_balance_sheet()` (lines 187-215) - Balance sheet via VCI source
 - `get_cash_flow()` (lines 218-246) - Cash flow statement via VCI source
-- `get_financial_ratios()` (lines 249-282) - Financial ratios via VCI source (with MultiIndex flattening)
+- `get_financial_ratios()` (lines 249-283) - Financial ratios via VCI source (with MultiIndex flattening)
+
+**Dividend Data Tool:**
+- `get_dividend_history()` (lines 286-313) - Complete dividend history via TCBS source
 
 **Price History functions:**
 - Accept `start`/`end` dates (YYYY-MM-DD format), `interval` parameter (1D, 1W, 1M)
@@ -133,6 +136,12 @@ def tool_name(param: str) -> str:
 - Hardcoded to annual data only (`period="year"`)
 - Return all available years of data (typically 10+ years)
 - Special handling for ratios: Apply `flatten_hierarchical_index()` before JSON conversion
+
+**Dividend function:**
+- Accept `symbol` (stock ticker) only
+- No date filtering - returns complete historical dividend records
+- Uses TCBS source exclusively
+- Returns exercise_date, cash_year, cash_dividend_percentage, issue_method
 
 **Dockerfile** - System dependencies required for wordcloud/vnstock3:
 - Base: `python:3.11-slim`
@@ -237,3 +246,7 @@ System dependencies in Dockerfile should handle all build requirements. If fails
 - Index data is only for Vietnamese market
 - rebuild with cache for faster developement
 - when new tools are added, update the available tools section of @README.md, provide the tool name and description, do not provide returns type and parameters, keep the docs short and concise
+- The protocol uses JSON-RPC 2.0 messages to establish communication between:
+Hosts: LLM applications that initiate connections
+Clients: Connectors within the host application
+Servers: Services that provide context and capabilities

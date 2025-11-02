@@ -61,3 +61,5 @@ registry:
         description: "Fetch annual cash flow statement for Vietnamese stocks"
       - name: get_financial_ratios
         description: "Fetch annual financial ratios for Vietnamese stocks"
+      - name: get_dividend_history
+        description: "Fetch complete dividend history for Vietnamese stocks"

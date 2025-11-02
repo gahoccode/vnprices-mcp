@@ -157,9 +157,28 @@ Get financial ratios for FPT stock
 
 **Data Source:** VCI (Viet Capital Securities)
 
+### get_dividend_history
+
+Fetch complete dividend history for Vietnamese stocks.
+
+**Parameters:**
+- `symbol` (string, required): Stock ticker symbol (e.g., 'VCI', 'ACB', 'HPG')
+
+**Returns:** JSON string with complete dividend history including exercise_date, cash_year, cash_dividend_percentage, and issue_method for all historical records. No date filtering applied - returns all available dividend data.
+
+**Example Queries:**
+```
+Get dividend history for ACB stock
+Show me all dividend payments for VCI
+```
+
+**Data Source:** TCBS
+
+**Note:** Returns complete historical records without date filtering. TCBS is the only data source for dividend information.
+
 ## Data Sources
 
-The server uses two data sources via vnstock3:
+The server uses three data sources via vnstock3:
 
 1. **VCI (Viet Capital Securities)**: Vietnamese stocks, indices, and financial statements
    - Used by: `get_stock_history()`, `get_index_history()`, all financial statement tools
@@ -168,6 +187,10 @@ The server uses two data sources via vnstock3:
 2. **MSN Finance**: Forex and crypto
    - Used by: `get_forex_history()`, `get_crypto_history()`
    - Implementation: `Vnstock().fx`, `Vnstock().crypto`
+
+3. **TCBS**: Dividend data
+   - Used by: `get_dividend_history()`
+   - Implementation: `Vnstock().stock().company` from vnstock3
 
 ## Technical Details
 
@@ -179,7 +202,7 @@ The server uses two data sources via vnstock3:
 - **Transport**: stdio (Standard Input/Output)
 - **Deployment**: Docker containerized, ~1.2GB image size
 - **Architecture**: Stateless - each tool invocation creates a fresh container instance
-- **Total Tools**: 8 (4 price history + 4 financial statements)
+- **Total Tools**: 9 (4 price history + 4 financial statements + 1 dividend)
 
 ## Usage Patterns
 
@@ -232,6 +255,7 @@ Each tool call spawns an isolated Docker container running `vnprices-mcp:latest`
 - vnstock Historical Prices Guide: https://github.com/gahoccode/docs/blob/main/vnstock/historical_prices.md
 - vnstock Financial Statements Guide: https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements.md
 - vnstock Financial Statements Data Types: https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements_dtypes.md
+- vnstock Dividends Guide: https://github.com/gahoccode/docs/blob/main/vnstock/dividends.md
 - vnstock VCI Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/vci/quote.py
 - vnstock MSN Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/msn/quote.py
 - Model Context Protocol: https://modelcontextprotocol.io

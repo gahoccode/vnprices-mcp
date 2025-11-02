@@ -47,6 +47,11 @@ Fetch annual cash flow statement for Vietnamese stocks.
 #### 8. `get_financial_ratios`
 Fetch annual financial ratios (P/B, ROE, etc.) for Vietnamese stocks.
 
+### Dividend Data Tool
+
+#### 9. `get_dividend_history`
+Fetch complete dividend history for Vietnamese stocks.
+
 ## Prerequisites
 
 - **Docker Desktop** (or Docker Engine) - [Download Docker Desktop](https://docs.docker.com/get-started/get-docker/)
@@ -194,6 +199,23 @@ Compare revenue and profit data for ACB over the past 5 years
 
 ```
 Analyze the debt-to-equity ratio trend for MBB
+```
+
+### Fetch Dividend History
+```
+Get dividend history for ACB stock
+```
+
+```
+Show me all dividend payments for VCI
+```
+
+```
+What dividends has HPG paid historically?
+```
+
+```
+Retrieve complete dividend records for MBB
 ```
 
 ## Rebuild & Test
@@ -426,7 +448,7 @@ tools:
 - **VNStock**: 3.2.0+
 - **Transport**: stdio (Standard Input/Output)
 - **Container Size**: ~1.2GB
-- **Total Tools**: 8 (4 price history + 4 financial statements)
+- **Total Tools**: 9 (4 price history + 4 financial statements + 1 dividend)
 
 ## References
 
@@ -434,6 +456,7 @@ tools:
 - [vnstock Historical Prices Guide](https://github.com/gahoccode/docs/blob/main/vnstock/historical_prices.md)
 - [vnstock Financial Statements Guide](https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements.md)
 - [vnstock Financial Statements Data Types](https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements_dtypes.md)
+- [vnstock Dividends Guide](https://github.com/gahoccode/docs/blob/main/vnstock/dividends.md)
 - [Model Context Protocol](https://modelcontextprotocol.io)
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 - [Docker MCP Gateway](https://github.com/docker/mcp-gateway)
