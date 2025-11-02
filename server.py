@@ -391,6 +391,67 @@ def get_vcb_exchange_rate(date: str) -> str:
         return f"Error fetching VCB exchange rates: {str(e)}"
 
 
+@mcp.tool()
+def get_company_info(symbol: str, info_type: str = "overview", lang: str = "en") -> str:
+    """
+    Get company information for Vietnamese stocks.
+
+    Args:
+        symbol: Stock ticker symbol (e.g., 'VCI', 'ACB', 'HPG')
+        info_type: Type of company information to fetch:
+                  'overview' - Company overview and basic information
+                  'shareholders' - Major shareholders information
+                  'officers' - Company officers and management (filter: 'working', 'resigned', 'all')
+                  'subsidiaries' - Subsidiaries and associated companies (filter: 'all', 'subsidiary')
+                  'events' - Corporate events and announcements
+                  'news' - Company news and updates
+                  'reports' - Analysis reports
+                  'ratio_summary' - Financial ratios summary
+                  'trading_stats' - Trading statistics and market data
+        lang: Language - 'en' (English) or 'vi' (Vietnamese)
+
+    Returns:
+        JSON string with company information based on the requested type
+    """
+    try:
+        # Initialize stock with VCI source for company information
+        stock = Vnstock().stock(symbol=symbol.upper(), source="VCI")
+        company = stock.company
+
+        # Fetch the requested company information
+        if info_type == "overview":
+            df = company.overview()
+        elif info_type == "shareholders":
+            df = company.shareholders()
+        elif info_type == "officers":
+            # Default to working officers, can be extended to accept filter parameter
+            df = company.officers(filter_by='working')
+        elif info_type == "subsidiaries":
+            # Default to all subsidiaries and associated companies
+            df = company.subsidiaries(filter_by='all')
+        elif info_type == "events":
+            df = company.events()
+        elif info_type == "news":
+            df = company.news()
+        elif info_type == "reports":
+            df = company.reports()
+        elif info_type == "ratio_summary":
+            df = company.ratio_summary()
+        elif info_type == "trading_stats":
+            df = company.trading_stats()
+        else:
+            return f"Invalid info_type '{info_type}'. Valid types: overview, shareholders, officers, subsidiaries, events, news, reports, ratio_summary, trading_stats"
+
+        if df is None or df.empty:
+            return f"No {info_type} data found for {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching {info_type} for {symbol}: {str(e)}"
+
+
 if __name__ == "__main__":
     # Run server with stdio transport (default)
     mcp.run()

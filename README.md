@@ -52,15 +52,20 @@ Fetch annual financial ratios (P/B, ROE, etc.) for Vietnamese stocks.
 #### 9. `get_dividend_history`
 Fetch complete dividend history for Vietnamese stocks.
 
+### Company Information Tools
+
+#### 10. `get_company_info`
+Fetch comprehensive company information for Vietnamese stocks including overview, shareholders, officers, subsidiaries, events, news, reports, financial ratios summary, and trading statistics.
+
 ### Commodity & Exchange Rate Tools
 
-#### 10. `get_sjc_gold_price`
+#### 11. `get_sjc_gold_price`
 Fetch SJC gold prices (current or historical from 2016-01-02).
 
-#### 11. `get_btmc_gold_price`
+#### 12. `get_btmc_gold_price`
 Fetch BTMC (Bảo Tín Minh Châu) gold prices (current only).
 
-#### 12. `get_vcb_exchange_rate`
+#### 13. `get_vcb_exchange_rate`
 Fetch VCB (Vietcombank) exchange rates for a specific date.
 
 ## Prerequisites
@@ -227,6 +232,43 @@ What dividends has HPG paid historically?
 
 ```
 Retrieve complete dividend records for MBB
+```
+
+### Fetch Company Information
+```
+Get company overview for ACB
+```
+
+```
+Show me major shareholders of VCI stock
+```
+
+```
+Get company officers and management team for HPG
+```
+
+```
+Show me subsidiaries and associated companies of VNM
+```
+
+```
+Get recent corporate events for FPT
+```
+
+```
+Show me company news and updates for ACB
+```
+
+```
+Get analysis reports for MBB stock
+```
+
+```
+Show me financial ratios summary for HPG
+```
+
+```
+Get trading statistics for VCI stock
 ```
 
 ### Fetch Gold Prices
@@ -481,7 +523,7 @@ tools:
 - **VNStock**: 3.2.0+
 - **Transport**: stdio (Standard Input/Output)
 - **Container Size**: ~1.2GB
-- **Total Tools**: 12 (4 price history + 4 financial statements + 1 dividend + 3 commodity/exchange)
+- **Total Tools**: 13 (4 price history + 4 financial statements + 1 dividend + 1 company info + 3 commodity/exchange)
 
 ## References
 
