@@ -70,12 +70,11 @@ Get Bitcoin price history from 2024-01-01 to 2024-12-31
 
 ### get_index_history
 
-Fetch historical index data for both Vietnamese and international indices.
+Fetch historical index data for Vietnamese market indices.
 
 **Parameters:**
 - `symbol` (string, required): Index symbol
   - Vietnamese: 'VNINDEX', 'HNXINDEX', 'UPCOMINDEX'
-  - International: 'DJI' (Dow Jones), 'IXIC' (Nasdaq), 'SPX' (S&P 500), 'FTSE' (FTSE 100), etc.
 - `start` (string, required): Start date in YYYY-MM-DD format
 - `end` (string, required): End date in YYYY-MM-DD format
 - `interval` (string, optional): Time interval - '1D', '1W', '1M'. Default: '1D'
@@ -84,25 +83,91 @@ Fetch historical index data for both Vietnamese and international indices.
 
 **Example Queries:**
 ```
-Retrieve S&P 500 index data for 2024
-Get VNINDEX data from 2024-01-01 to 2024-12-31
+Retrieve VNINDEX data for 2024
+Get HNXINDEX data from 2024-01-01 to 2024-12-31
 ```
 
-**Data Source:** Hybrid routing
-- Vietnamese indices (VNINDEX, HNXINDEX, UPCOMINDEX): VCI source
-- International indices: MSN Finance
+**Data Source:** VCI (Viet Capital Securities)
+
+### get_income_statement
+
+Fetch annual income statement (profit & loss) for Vietnamese stocks.
+
+**Parameters:**
+- `symbol` (string, required): Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
+- `lang` (string, optional): Language - 'en' (English) or 'vi' (Vietnamese). Default: 'en'
+
+**Returns:** JSON string with annual income statement data including revenue, expenses, profit metrics, and earnings per share (EPS) for multiple years
+
+**Example Query:**
+```
+Get the annual income statement for VCI stock
+```
+
+**Data Source:** VCI (Viet Capital Securities)
+
+### get_balance_sheet
+
+Fetch annual balance sheet for Vietnamese stocks.
+
+**Parameters:**
+- `symbol` (string, required): Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
+- `lang` (string, optional): Language - 'en' (English) or 'vi' (Vietnamese). Default: 'en'
+
+**Returns:** JSON string with annual balance sheet data including assets, liabilities, equity, and detailed financial position metrics for multiple years
+
+**Example Query:**
+```
+Show me the balance sheet for HPG in Vietnamese
+```
+
+**Data Source:** VCI (Viet Capital Securities)
+
+### get_cash_flow
+
+Fetch annual cash flow statement for Vietnamese stocks.
+
+**Parameters:**
+- `symbol` (string, required): Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
+- `lang` (string, optional): Language - 'en' (English) or 'vi' (Vietnamese). Default: 'en'
+
+**Returns:** JSON string with annual cash flow data including operating, investing, and financing activities for multiple years
+
+**Example Query:**
+```
+Retrieve cash flow statement for VNM
+```
+
+**Data Source:** VCI (Viet Capital Securities)
+
+### get_financial_ratios
+
+Fetch annual financial ratios and metrics for Vietnamese stocks.
+
+**Parameters:**
+- `symbol` (string, required): Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
+- `lang` (string, optional): Language - 'en' (English) or 'vi' (Vietnamese). Default: 'en'
+
+**Returns:** JSON string with annual financial ratios including P/B (Price-to-Book), ROE (Return on Equity), and other key financial health indicators for multiple years
+
+**Example Query:**
+```
+Get financial ratios for FPT stock
+```
+
+**Data Source:** VCI (Viet Capital Securities)
 
 ## Data Sources
 
 The server uses two data sources via vnstock3:
 
-1. **VCI (Viet Capital Securities)**: Vietnamese stocks and indices
-   - Used by: `get_stock_history()`, Vietnamese indices in `get_index_history()`
-   - Implementation: `Quote` class from vnstock3
+1. **VCI (Viet Capital Securities)**: Vietnamese stocks, indices, and financial statements
+   - Used by: `get_stock_history()`, `get_index_history()`, all financial statement tools
+   - Implementation: `Quote` class and `Vnstock().stock().finance` from vnstock3
 
-2. **MSN Finance**: Forex, crypto, and international indices
-   - Used by: `get_forex_history()`, `get_crypto_history()`, international indices in `get_index_history()`
-   - Implementation: `Vnstock().fx`, `Vnstock().crypto`, `Vnstock().world_index`
+2. **MSN Finance**: Forex and crypto
+   - Used by: `get_forex_history()`, `get_crypto_history()`
+   - Implementation: `Vnstock().fx`, `Vnstock().crypto`
 
 ## Technical Details
 
@@ -114,6 +179,7 @@ The server uses two data sources via vnstock3:
 - **Transport**: stdio (Standard Input/Output)
 - **Deployment**: Docker containerized, ~1.2GB image size
 - **Architecture**: Stateless - each tool invocation creates a fresh container instance
+- **Total Tools**: 8 (4 price history + 4 financial statements)
 
 ## Usage Patterns
 
@@ -140,14 +206,6 @@ All dates must be in `YYYY-MM-DD` format:
 - HNXINDEX: Hanoi Stock Exchange
 - UPCOMINDEX: UPCoM Index
 
-**International Indices**:
-- DJI: Dow Jones Industrial Average
-- IXIC: Nasdaq Composite
-- SPX: S&P 500
-- FTSE: FTSE 100
-- N225: Nikkei 225
-- HSI: Hang Seng Index
-
 ### Error Handling
 All tools return error messages as strings when exceptions occur. Errors are formatted as:
 ```
@@ -172,6 +230,8 @@ Each tool call spawns an isolated Docker container running `vnprices-mcp:latest`
 
 - vnstock3 Documentation: https://vnstocks.com/docs/vnstock/thong-ke-gia-lich-su
 - vnstock Historical Prices Guide: https://github.com/gahoccode/docs/blob/main/vnstock/historical_prices.md
+- vnstock Financial Statements Guide: https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements.md
+- vnstock Financial Statements Data Types: https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements_dtypes.md
 - vnstock VCI Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/vci/quote.py
 - vnstock MSN Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/msn/quote.py
 - Model Context Protocol: https://modelcontextprotocol.io

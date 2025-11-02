@@ -235,3 +235,5 @@ System dependencies in Dockerfile should handle all build requirements. If fails
 - FastMCP SDK: https://github.com/modelcontextprotocol/python-sdk
 - Docker MCP Gateway: https://github.com/docker/mcp-gateway
 - Index data is only for Vietnamese market
+- rebuild with cache for faster developement
+- when new tools are added, update the available tools section of @README.md, provide the tool name and description, do not provide returns type and parameters, keep the docs short and concise

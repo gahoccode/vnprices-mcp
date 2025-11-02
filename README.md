@@ -31,7 +31,9 @@ Fetch historical cryptocurrency price data (e.g., BTC, ETH).
 #### 4. `get_index_history`
 Fetch historical index data for Vietnamese market indices (VNINDEX, HNXINDEX, UPCOMINDEX).
 
-### Financial Statement Tools (Annual Data)
+### Financial Statement Tools
+
+**Note:** Currently supports annual periods only. Quarterly data support planned for future releases.
 
 #### 5. `get_income_statement`
 Fetch annual income statement (profit & loss) for Vietnamese stocks.
