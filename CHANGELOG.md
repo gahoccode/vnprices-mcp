@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-11-02
+
+### Added
+- `get_sjc_gold_price` tool for fetching SJC gold prices (current or historical from 2016-01-02)
+- `get_btmc_gold_price` tool for fetching BTMC (Bảo Tín Minh Châu) gold prices (current only)
+- `get_vcb_exchange_rate` tool for fetching VCB (Vietcombank) exchange rates for specific dates
+- SJC data source integration for gold prices (9 products with buy/sell prices)
+- BTMC data source integration for gold prices (49 products with karat, gold_content, world_price)
+- VCB data source integration for bank exchange rates (20 major currencies)
+- Commodity and exchange rate usage examples in documentation
+
+### Changed
+- Total tools count from 9 to 12 (4 price + 4 financial + 1 dividend + 3 commodity/exchange)
+- Updated data sources section to include SJC, BTMC, and VCB
+- Enhanced documentation with commodity and exchange rate tool details
+
+### Documentation
+- Updated README.md with commodity & exchange rate tools and usage examples
+- Updated CLAUDE.md with new tool implementation details and data sources
+- Updated llms.txt with complete commodity & exchange rate tool documentation
+- Added vnstock commodity prices guide and source code reference links
+
 ## [0.3.0] - 2025-11-02
 
 ### Added
@@ -82,7 +104,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Requirements.txt with core dependencies
 - .gitignore for project cleanliness
 
-[Unreleased]: https://github.com/gahoccode/vnprices-mcp/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/gahoccode/vnprices-mcp/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/gahoccode/vnprices-mcp/releases/tag/v0.1.0

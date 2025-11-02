@@ -109,22 +109,27 @@ def tool_name(param: str) -> str:
 
 ### Key Implementation Details
 
-**server.py (~314 lines)** - Core MCP server with 9 tools:
+**server.py (~397 lines)** - Core MCP server with 12 tools:
 
 **Price History Tools:**
-- `get_stock_history()` (lines 14-43) - Vietnamese stocks via VCI source
-- `get_forex_history()` (lines 46-77) - Exchange rates via MSN source
-- `get_crypto_history()` (lines 80-111) - Cryptocurrency via MSN source
-- `get_index_history()` (lines 114-153) - Indices (hybrid VCI/MSN routing)
+- `get_stock_history()` (lines 16-45) - Vietnamese stocks via VCI source
+- `get_forex_history()` (lines 48-79) - Exchange rates via MSN source
+- `get_crypto_history()` (lines 82-113) - Cryptocurrency via MSN source
+- `get_index_history()` (lines 116-155) - Indices (hybrid VCI/MSN routing)
 
 **Financial Statement Tools (Annual only):**
-- `get_income_statement()` (lines 156-184) - Income statement via VCI source
-- `get_balance_sheet()` (lines 187-215) - Balance sheet via VCI source
-- `get_cash_flow()` (lines 218-246) - Cash flow statement via VCI source
-- `get_financial_ratios()` (lines 249-283) - Financial ratios via VCI source (with MultiIndex flattening)
+- `get_income_statement()` (lines 158-186) - Income statement via VCI source
+- `get_balance_sheet()` (lines 189-217) - Balance sheet via VCI source
+- `get_cash_flow()` (lines 220-248) - Cash flow statement via VCI source
+- `get_financial_ratios()` (lines 251-285) - Financial ratios via VCI source (with MultiIndex flattening)
 
 **Dividend Data Tool:**
-- `get_dividend_history()` (lines 286-313) - Complete dividend history via TCBS source
+- `get_dividend_history()` (lines 288-315) - Complete dividend history via TCBS source
+
+**Commodity & Exchange Rate Tools:**
+- `get_sjc_gold_price()` (lines 318-342) - SJC gold prices (current or historical from 2016-01-02)
+- `get_btmc_gold_price()` (lines 345-365) - BTMC gold prices (current only)
+- `get_vcb_exchange_rate()` (lines 368-391) - VCB bank exchange rates for specific date
 
 **Price History functions:**
 - Accept `start`/`end` dates (YYYY-MM-DD format), `interval` parameter (1D, 1W, 1M)
@@ -142,6 +147,14 @@ def tool_name(param: str) -> str:
 - No date filtering - returns complete historical dividend records
 - Uses TCBS source exclusively
 - Returns exercise_date, cash_year, cash_dividend_percentage, issue_method
+
+**Commodity & Exchange Rate functions:**
+- `get_sjc_gold_price()`: Optional `date` parameter (YYYY-MM-DD), None returns current prices, historical data available from 2016-01-02
+- `get_btmc_gold_price()`: No parameters, returns current prices only
+- `get_vcb_exchange_rate()`: Required `date` parameter (YYYY-MM-DD), single date only (no range support)
+- All use direct source APIs via vnstock.explorer.misc modules
+- Gold prices: SJC (9 products), BTMC (49 products with karat/world_price details)
+- Exchange rates: VCB (20 major currencies with buy_cash, buy_transfer, sell rates)
 
 **Dockerfile** - System dependencies required for wordcloud/vnstock3:
 - Base: `python:3.11-slim`
@@ -173,8 +186,14 @@ def tool_name(param: str) -> str:
 
 1. Claude Desktop → MCP Gateway (via stdio transport)
 2. MCP Gateway → Docker container (vnprices-mcp:latest)
-3. Container initializes Quote/Vnstock objects
-4. vnstock3 fetches from VCI/MSN sources
+3. Container initializes Quote/Vnstock objects or calls vnstock.explorer.misc functions
+4. vnstock3 fetches from data sources:
+   - VCI: Vietnamese stocks, indices, financial statements
+   - MSN: International forex, crypto, indices
+   - TCBS: Dividend data
+   - SJC: Gold prices (direct API)
+   - BTMC: Gold prices (direct API)
+   - VCB: Bank exchange rates (direct API)
 5. Data processed via pandas → JSON string
 6. Return path: Container → Gateway → Claude Desktop
 
@@ -238,8 +257,13 @@ System dependencies in Dockerfile should handle all build requirements. If fails
 
 - vnstock3 Documentation: https://vnstocks.com/docs/vnstock/thong-ke-gia-lich-su
 - vnstock Historical Prices Guide: https://github.com/gahoccode/docs/blob/main/vnstock/historical_prices.md
+- vnstock Financial Statements Guide: https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements.md
+- vnstock Dividends Guide: https://github.com/gahoccode/docs/blob/main/vnstock/dividends.md
+- vnstock Commodity Prices Guide: https://github.com/gahoccode/docs/blob/main/vnstock/commodity_prices.md
 - vnstock VCI Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/vci/quote.py
 - vnstock MSN Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/msn/quote.py
+- vnstock Gold Price Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/misc/gold_price.py
+- vnstock Exchange Rate Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/misc/exchange_rate.py
 - Model Context Protocol: https://modelcontextprotocol.io
 - FastMCP SDK: https://github.com/modelcontextprotocol/python-sdk
 - Docker MCP Gateway: https://github.com/docker/mcp-gateway

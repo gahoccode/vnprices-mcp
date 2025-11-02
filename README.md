@@ -52,6 +52,17 @@ Fetch annual financial ratios (P/B, ROE, etc.) for Vietnamese stocks.
 #### 9. `get_dividend_history`
 Fetch complete dividend history for Vietnamese stocks.
 
+### Commodity & Exchange Rate Tools
+
+#### 10. `get_sjc_gold_price`
+Fetch SJC gold prices (current or historical from 2016-01-02).
+
+#### 11. `get_btmc_gold_price`
+Fetch BTMC (Bảo Tín Minh Châu) gold prices (current only).
+
+#### 12. `get_vcb_exchange_rate`
+Fetch VCB (Vietcombank) exchange rates for a specific date.
+
 ## Prerequisites
 
 - **Docker Desktop** (or Docker Engine) - [Download Docker Desktop](https://docs.docker.com/get-started/get-docker/)
@@ -216,6 +227,28 @@ What dividends has HPG paid historically?
 
 ```
 Retrieve complete dividend records for MBB
+```
+
+### Fetch Gold Prices
+```
+Get current SJC gold prices
+```
+
+```
+Show me SJC gold prices for 2024-01-15
+```
+
+```
+Get BTMC gold prices
+```
+
+### Fetch Bank Exchange Rates
+```
+Get VCB exchange rates for 2024-12-31
+```
+
+```
+Show me Vietcombank exchange rates for today
 ```
 
 ## Rebuild & Test
@@ -448,7 +481,7 @@ tools:
 - **VNStock**: 3.2.0+
 - **Transport**: stdio (Standard Input/Output)
 - **Container Size**: ~1.2GB
-- **Total Tools**: 9 (4 price history + 4 financial statements + 1 dividend)
+- **Total Tools**: 12 (4 price history + 4 financial statements + 1 dividend + 3 commodity/exchange)
 
 ## References
 
@@ -457,6 +490,9 @@ tools:
 - [vnstock Financial Statements Guide](https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements.md)
 - [vnstock Financial Statements Data Types](https://github.com/gahoccode/docs/blob/main/vnstock/financial_statements_dtypes.md)
 - [vnstock Dividends Guide](https://github.com/gahoccode/docs/blob/main/vnstock/dividends.md)
+- [vnstock Commodity Prices Guide](https://github.com/gahoccode/docs/blob/main/vnstock/commodity_prices.md)
+- [vnstock Gold Price Source](https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/misc/gold_price.py)
+- [vnstock Exchange Rate Source](https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/misc/exchange_rate.py)
 - [Model Context Protocol](https://modelcontextprotocol.io)
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 - [Docker MCP Gateway](https://github.com/docker/mcp-gateway)
