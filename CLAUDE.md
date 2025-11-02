@@ -250,3 +250,4 @@ System dependencies in Dockerfile should handle all build requirements. If fails
 Hosts: LLM applications that initiate connections
 Clients: Connectors within the host application
 Servers: Services that provide context and capabilities
+- So internal pandas dataframe must be converted to json string for proper communication
