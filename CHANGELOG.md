@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- `get_highest_nav_fund` tool for finding mutual funds with highest NAV
+- Updated total tool count from 23 to 22 fund management tools
+- Removed corresponding documentation examples
+
 ## [1.0.0] - 2025-11-03
 
 ### 🎉 First Major Release
