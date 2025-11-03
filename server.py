@@ -8,11 +8,15 @@ from vnstock import Vnstock, Quote
 from vnstock.core.utils.transform import flatten_hierarchical_index
 from vnstock.explorer.misc.gold_price import sjc_gold_price, btmc_goldprice
 from vnstock.explorer.misc.exchange_rate import vcb_exchange_rate
+from vnstock.explorer.fmarket.fund import Fund
 from pypfopt import EfficientFrontier, risk_models, expected_returns
 from pypfopt.exceptions import OptimizationError
 
 # Initialize the MCP server
 mcp = FastMCP("vnprices")
+
+# Initialize fund object for mutual fund data
+fund = Fund()
 
 
 @mcp.tool()
@@ -832,6 +836,164 @@ def full_portfolio_optimization(
 
     except Exception as e:
         return f"Error in full portfolio optimization: {str(e)}"
+
+
+# ========== Fund Management Tools ==========
+
+@mcp.tool()
+def get_fund_listing(fund_type: str = "") -> str:
+    """
+    Get list of all available mutual funds.
+
+    Args:
+        fund_type: Filter by fund type - '' (all), 'BALANCED', 'BOND', 'STOCK'
+
+    Returns:
+        JSON string with complete fund listing including fund codes, names, NAV,
+        fund types, owners, inception dates, and performance metrics
+    """
+    try:
+        # Fetch fund listing
+        df = fund.listing(fund_type=fund_type)
+
+        if df is None or df.empty:
+            return f"No funds found for type: {fund_type}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching fund listing: {str(e)}"
+
+
+@mcp.tool()
+def search_funds(symbol: str) -> str:
+    """
+    Search for mutual funds by symbol or partial name.
+
+    Args:
+        symbol: Fund short name or ticker (case-insensitive, partial match allowed)
+
+    Returns:
+        JSON string with matching funds including their IDs and short names
+    """
+    try:
+        # Search for funds
+        df = fund.filter(symbol=symbol)
+
+        if df is None or df.empty:
+            return f"No funds found matching: {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error searching funds: {str(e)}"
+
+
+@mcp.tool()
+def get_fund_nav_report(symbol: str) -> str:
+    """
+    Get historical NAV report for a specific mutual fund.
+
+    Args:
+        symbol: Fund short name/ticker (e.g., 'SSISCA', 'VESAF')
+
+    Returns:
+        JSON string with historical NAV data including dates and NAV per unit
+    """
+    try:
+        # Fetch NAV report
+        df = fund.details.nav_report(symbol=symbol.upper())
+
+        if df is None or df.empty:
+            return f"No NAV data found for fund: {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching NAV report for {symbol}: {str(e)}"
+
+
+@mcp.tool()
+def get_fund_top_holdings(symbol: str) -> str:
+    """
+    Get top 10 holdings for a specific mutual fund.
+
+    Args:
+        symbol: Fund short name/ticker (e.g., 'SSISCA', 'VESAF')
+
+    Returns:
+        JSON string with top holdings including stock codes, industries,
+        net asset percentages, asset types, and last update date
+    """
+    try:
+        # Fetch top holdings
+        df = fund.details.top_holding(symbol=symbol.upper())
+
+        if df is None or df.empty:
+            return f"No top holdings data found for fund: {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching top holdings for {symbol}: {str(e)}"
+
+
+@mcp.tool()
+def get_fund_industry_allocation(symbol: str) -> str:
+    """
+    Get industry allocation breakdown for a specific mutual fund.
+
+    Args:
+        symbol: Fund short name/ticker (e.g., 'SSISCA', 'VESAF')
+
+    Returns:
+        JSON string with industry allocation including industry names
+        and net asset percentages
+    """
+    try:
+        # Fetch industry allocation
+        df = fund.details.industry_holding(symbol=symbol.upper())
+
+        if df is None or df.empty:
+            return f"No industry allocation data found for fund: {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching industry allocation for {symbol}: {str(e)}"
+
+
+@mcp.tool()
+def get_fund_asset_allocation(symbol: str) -> str:
+    """
+    Get asset allocation breakdown for a specific mutual fund.
+
+    Args:
+        symbol: Fund short name/ticker (e.g., 'SSISCA', 'VESAF')
+
+    Returns:
+        JSON string with asset allocation including asset types
+        and asset percentages
+    """
+    try:
+        # Fetch asset allocation
+        df = fund.details.asset_holding(symbol=symbol.upper())
+
+        if df is None or df.empty:
+            return f"No asset allocation data found for fund: {symbol}"
+
+        # Convert to JSON
+        return df.to_json(orient="records", date_format="iso", indent=2)
+
+    except Exception as e:
+        return f"Error fetching asset allocation for {symbol}: {str(e)}"
+
+
 
 
 if __name__ == "__main__":

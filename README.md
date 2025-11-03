@@ -79,6 +79,27 @@ Fetch BTMC (Bảo Tín Minh Châu) gold prices (current only).
 #### 16. `get_vcb_exchange_rate`
 Fetch VCB (Vietcombank) exchange rates for a specific date.
 
+### Fund Management Tools
+
+#### 17. `get_fund_listing`
+Get list of all available mutual funds with filtering by fund type (BALANCED, BOND, STOCK).
+
+#### 18. `search_funds`
+Search for mutual funds by symbol or partial name.
+
+#### 19. `get_fund_nav_report`
+Get historical NAV report for a specific mutual fund.
+
+#### 20. `get_fund_top_holdings`
+Get top 10 holdings for a specific mutual fund.
+
+#### 21. `get_fund_industry_allocation`
+Get industry allocation breakdown for a specific mutual fund.
+
+#### 22. `get_fund_asset_allocation`
+Get asset allocation breakdown for a specific mutual fund.
+
+
 ## Prerequisites
 
 - **Docker Desktop** (or Docker Engine) - [Download Docker Desktop](https://docs.docker.com/get-started/get-docker/)
@@ -325,7 +346,7 @@ tools:
 - **PyPortfolioOpt**: 1.5.6+ (portfolio optimization)
 - **Transport**: stdio (Standard Input/Output)
 - **Container Size**: ~1.7GB (v1.0.0+: increased from ~1.2GB due to portfolio optimization libraries)
-- **Total Tools**: 16 (4 price history + 3 portfolio optimization + 4 financial statements + 1 dividend + 1 company info + 3 commodity/exchange)
+- **Total Tools**: 22 (4 price history + 3 portfolio optimization + 4 financial statements + 1 dividend + 1 company info + 3 commodity/exchange + 6 fund management)
 
 ## References
 
