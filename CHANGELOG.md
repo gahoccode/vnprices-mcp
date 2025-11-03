@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-11-03
+
+### 🎉 First Major Release
+
+This release marks the first stable version with comprehensive Vietnamese financial data coverage and advanced portfolio optimization capabilities.
+
+### Breaking Changes
+
+⚠️ **Container Size Increase**: Docker image size increased from ~1.2GB to ~1.7GB (~500MB / 41% increase) due to portfolio optimization dependencies (scipy, numpy, cvxpy, osqp). This impacts:
+- Disk space requirements
+- Initial pull/build time (significantly longer)
+- CI/CD pipeline duration
+- Bandwidth for container distribution
+- Memory requirements during optimization calculations
+
+⚠️ **New Dependencies**: Added heavy numerical computing libraries (pyportfolioopt, osqp) with transitive dependencies (scipy, numpy, cvxpy). May conflict with existing numerical library versions in custom deployments.
+
+⚠️ **Build Requirements**: Requires system build tools (gcc, g++, build-essential) already included in Dockerfile. Custom builds need these dependencies.
+
+### Added
+- `calculate_returns` tool for calculating expected returns for Vietnamese stock portfolios
+- `optimize_portfolio` tool for Mean-Variance Optimization to maximize Sharpe ratio
+- `full_portfolio_optimization` tool for comprehensive portfolio optimization with multiple strategies (max Sharpe, min volatility, max utility)
+- PyPortfolioOpt library integration for portfolio optimization (version 1.5.6+)
+- OSQP solver integration for quadratic programming (version 0.6.0+)
+- Support for multiple expected returns calculation methods (mean historical, exponential moving average)
+- Support for multiple covariance matrix methods (sample_cov, ledoit_wolf, exp_cov, semicovariance)
+- Configurable risk-free rate and risk aversion parameters
+- Portfolio performance metrics (expected annual return, annual volatility, Sharpe ratio)
+- Portfolio optimization usage examples in examples/questions.md
+
+### Changed
+- Total tools count from 13 to 16 (4 price + 3 portfolio + 4 financial + 1 dividend + 1 company + 3 commodity/exchange)
+- Container size from ~1.2GB to ~1.7GB due to optimization libraries
+- Refactored portfolio optimization tools to use inline implementation pattern (removed helper functions)
+- Reorganized documentation structure - moved usage examples to dedicated examples/questions.md file
+- Simplified README.md Usage Examples section with reference to examples directory
+- Updated vnstock-catalog.yaml with all 16 tools
+- Enhanced .gitignore to exclude prds/ directory
+
+### Documentation
+- Created examples/ directory for better organization
+- Created examples/questions.md with comprehensive usage examples for all tools
+- Updated README.md with portfolio optimization tools section
+- Added portfolio optimization examples for calculate returns, optimize portfolio, and full portfolio analysis
+- Updated technical details to reflect 16 total tools and new container size
+- Documented breaking changes in requirements.txt
+
+### Technical
+- All portfolio optimization tools use self-contained inline implementation (stateless container design)
+- Proper error handling with OptimizationError exceptions
+- JSON-RPC compatible output format for all optimization results
+- Platform support: macOS ARM64 and Linux x86_64 with binary wheels
+
 ## [0.5.0] - 2025-11-02
 
 ### Added
@@ -127,7 +181,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Requirements.txt with core dependencies
 - .gitignore for project cleanliness
 
-[Unreleased]: https://github.com/gahoccode/vnprices-mcp/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/gahoccode/vnprices-mcp/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.5.0...v1.0.0
 [0.5.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/gahoccode/vnprices-mcp/compare/v0.2.0...v0.3.0

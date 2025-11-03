@@ -31,41 +31,52 @@ Fetch historical cryptocurrency price data (e.g., BTC, ETH).
 #### 4. `get_index_history`
 Fetch historical index data for Vietnamese market indices (VNINDEX, HNXINDEX, UPCOMINDEX).
 
+### Portfolio Optimization Tools
+
+#### 5. `calculate_returns`
+Calculate expected returns for a portfolio of Vietnamese stocks using mean historical or exponential moving average methods.
+
+#### 6. `optimize_portfolio`
+Perform Mean-Variance Optimization to find the maximum Sharpe ratio portfolio for Vietnamese stocks.
+
+#### 7. `full_portfolio_optimization`
+Perform comprehensive portfolio optimization with multiple strategies (max Sharpe, min volatility, max utility) for Vietnamese stocks.
+
 ### Financial Statement Tools
 
 **Note:** Currently supports annual periods only. Quarterly data support planned for future releases.
 
-#### 5. `get_income_statement`
+#### 8. `get_income_statement`
 Fetch annual income statement (profit & loss) for Vietnamese stocks.
 
-#### 6. `get_balance_sheet`
+#### 9. `get_balance_sheet`
 Fetch annual balance sheet for Vietnamese stocks.
 
-#### 7. `get_cash_flow`
+#### 10. `get_cash_flow`
 Fetch annual cash flow statement for Vietnamese stocks.
 
-#### 8. `get_financial_ratios`
+#### 11. `get_financial_ratios`
 Fetch annual financial ratios (P/B, ROE, etc.) for Vietnamese stocks.
 
 ### Dividend Data Tool
 
-#### 9. `get_dividend_history`
+#### 12. `get_dividend_history`
 Fetch complete dividend history for Vietnamese stocks.
 
 ### Company Information Tools
 
-#### 10. `get_company_info`
+#### 13. `get_company_info`
 Fetch comprehensive company information for Vietnamese stocks including overview, shareholders, officers, subsidiaries, events, news, reports, financial ratios summary, and trading statistics.
 
 ### Commodity & Exchange Rate Tools
 
-#### 11. `get_sjc_gold_price`
+#### 14. `get_sjc_gold_price`
 Fetch SJC gold prices (current or historical from 2016-01-02).
 
-#### 12. `get_btmc_gold_price`
+#### 15. `get_btmc_gold_price`
 Fetch BTMC (Bảo Tín Minh Châu) gold prices (current only).
 
-#### 13. `get_vcb_exchange_rate`
+#### 16. `get_vcb_exchange_rate`
 Fetch VCB (Vietcombank) exchange rates for a specific date.
 
 ## Prerequisites
@@ -161,137 +172,13 @@ After configuration:
 
 ## Usage Examples
 
-Open Claude Desktop and try these commands:
+For detailed usage examples and sample queries, see [examples/questions.md](./examples/questions.md).
 
-### Check Available Tools
-```
-What tools do you have available?
-```
-
-### Fetch Stock Data
-```
-Get VCI stock prices from January 1, 2024 to December 31, 2024
-```
-
-### Fetch Forex Data
-```
-Show me USDVND exchange rates for the last 6 months
-```
-
-### Fetch Crypto Data
-```
-Get Bitcoin price history from 2024-01-01 to 2024-12-31
-```
-
-### Fetch Index Data
-```
-Retrieve VNINDEX data for 2024
-```
-
-```
-Show me HNXINDEX from January to December 2024
-```
-
-### Fetch Financial Statements
-```
-Get the annual income statement for VCI stock
-```
-
-```
-Show me the balance sheet for HPG in Vietnamese
-```
-
-```
-Retrieve cash flow statement for VNM
-```
-
-```
-Get financial ratios for FPT stock
-```
-
-```
-Compare revenue and profit data for ACB over the past 5 years
-```
-
-```
-Analyze the debt-to-equity ratio trend for MBB
-```
-
-### Fetch Dividend History
-```
-Get dividend history for ACB stock
-```
-
-```
-Show me all dividend payments for VCI
-```
-
-```
-What dividends has HPG paid historically?
-```
-
-```
-Retrieve complete dividend records for MBB
-```
-
-### Fetch Company Information
-```
-Get company overview for ACB
-```
-
-```
-Show me major shareholders of VCI stock
-```
-
-```
-Get company officers and management team for HPG
-```
-
-```
-Show me subsidiaries and associated companies of VNM
-```
-
-```
-Get recent corporate events for FPT
-```
-
-```
-Show me company news and updates for ACB
-```
-
-```
-Get analysis reports for MBB stock
-```
-
-```
-Show me financial ratios summary for HPG
-```
-
-```
-Get trading statistics for VCI stock
-```
-
-### Fetch Gold Prices
-```
-Get current SJC gold prices
-```
-
-```
-Show me SJC gold prices for 2024-01-15
-```
-
-```
-Get BTMC gold prices
-```
-
-### Fetch Bank Exchange Rates
-```
-Get VCB exchange rates for 2024-12-31
-```
-
-```
-Show me Vietcombank exchange rates for today
-```
+Quick examples:
+- **Stock Data**: `Get VCI stock prices from January 1, 2024 to December 31, 2024`
+- **Portfolio Optimization**: `Find the optimal portfolio weights for VCI, VNM, HPG to maximize Sharpe ratio`
+- **Financial Statements**: `Get the annual income statement for VCI stock`
+- **Company Info**: `Show me major shareholders of VCI stock`
 
 ## Rebuild & Test
 
@@ -521,9 +408,10 @@ tools:
 - **Python Version**: 3.11
 - **MCP SDK**: 1.2.0+
 - **VNStock**: 3.2.0+
+- **PyPortfolioOpt**: 1.5.6+ (portfolio optimization)
 - **Transport**: stdio (Standard Input/Output)
-- **Container Size**: ~1.2GB
-- **Total Tools**: 13 (4 price history + 4 financial statements + 1 dividend + 1 company info + 3 commodity/exchange)
+- **Container Size**: ~1.7GB (v1.0.0+: increased from ~1.2GB due to portfolio optimization libraries)
+- **Total Tools**: 16 (4 price history + 3 portfolio optimization + 4 financial statements + 1 dividend + 1 company info + 3 commodity/exchange)
 
 ## References
 
