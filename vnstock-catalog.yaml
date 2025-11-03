@@ -69,3 +69,11 @@ registry:
         description: "Fetch BTMC gold prices (current only)"
       - name: get_vcb_exchange_rate
         description: "Fetch VCB bank exchange rates for a specific date"
+      - name: get_company_info
+        description: "Fetch comprehensive company information for Vietnamese stocks"
+      - name: calculate_returns
+        description: "Calculate expected returns for Vietnamese stock portfolios"
+      - name: optimize_portfolio
+        description: "Perform Mean-Variance Optimization for maximum Sharpe ratio"
+      - name: full_portfolio_optimization
+        description: "Comprehensive portfolio optimization with multiple strategies"

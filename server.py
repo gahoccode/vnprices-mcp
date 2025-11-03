@@ -8,6 +8,8 @@ from vnstock import Vnstock, Quote
 from vnstock.core.utils.transform import flatten_hierarchical_index
 from vnstock.explorer.misc.gold_price import sjc_gold_price, btmc_goldprice
 from vnstock.explorer.misc.exchange_rate import vcb_exchange_rate
+from pypfopt import EfficientFrontier, risk_models, expected_returns
+from pypfopt.exceptions import OptimizationError
 
 # Initialize the MCP server
 mcp = FastMCP("vnprices")
@@ -425,10 +427,10 @@ def get_company_info(symbol: str, info_type: str = "overview", lang: str = "en")
             df = company.shareholders()
         elif info_type == "officers":
             # Default to working officers, can be extended to accept filter parameter
-            df = company.officers(filter_by='working')
+            df = company.officers(filter_by="working")
         elif info_type == "subsidiaries":
             # Default to all subsidiaries and associated companies
-            df = company.subsidiaries(filter_by='all')
+            df = company.subsidiaries(filter_by="all")
         elif info_type == "events":
             df = company.events()
         elif info_type == "news":
@@ -450,6 +452,386 @@ def get_company_info(symbol: str, info_type: str = "overview", lang: str = "en")
 
     except Exception as e:
         return f"Error fetching {info_type} for {symbol}: {str(e)}"
+
+
+@mcp.tool()
+def calculate_returns(
+    symbols: list,
+    start_date: str,
+    end_date: str,
+    method: str = "mean_historical",
+    log_returns: bool = False,
+) -> str:
+    """
+    Calculate expected returns for a portfolio of Vietnamese stocks.
+
+    Args:
+        symbols: List of stock symbols (e.g., ['VCI', 'VNM', 'HPG'])
+        start_date: Start date in YYYY-MM-DD format (e.g., '2024-01-01')
+        end_date: End date in YYYY-MM-DD format (e.g., '2024-12-31')
+        method: Returns calculation method - 'mean_historical', 'ema_historical'
+        log_returns: Whether to use log returns (True) or arithmetic returns (False)
+
+    Returns:
+        JSON string with expected returns data, methodology, and statistics
+    """
+    try:
+        import pandas as pd
+        import json
+
+        # Fetch and clean price data for multiple symbols
+        all_data = []
+        for symbol in symbols:
+            try:
+                # Initialize Quote object with VCI source
+                quote = Quote(symbol=symbol, source="VCI")
+                df = quote.history(start=start_date, end=end_date, interval="1D")
+
+                if df is None or df.empty:
+                    return f"No data found for {symbol} between {start_date} and {end_date}"
+
+                # Add symbol column and keep only close price
+                df_clean = df[["close"]].copy()
+                df_clean.columns = [symbol]
+                all_data.append(df_clean)
+
+            except Exception as e:
+                return f"Error fetching data for {symbol}: {str(e)}"
+
+        if not all_data:
+            return "No data found for any symbols"
+
+        # Merge all DataFrames on date index
+        combined_df = pd.concat(all_data, axis=1)
+
+        # Drop rows with any missing values
+        combined_df = combined_df.dropna()
+
+        if combined_df.empty:
+            return "No complete data available after cleaning missing values"
+
+        # Calculate expected returns using mean historical method
+        mu = expected_returns.mean_historical_return(
+            combined_df,
+            returns_data=False,
+            compounding=False,
+            frequency=252,
+            log_returns=log_returns,
+        )
+
+        # Prepare output
+        output = {
+            "symbols": symbols,
+            "start_date": start_date,
+            "end_date": end_date,
+            "method": method,
+            "log_returns": log_returns,
+            "expected_returns": mu.to_dict(),
+            "frequency": 252,
+            "compounding": False,
+        }
+
+        return json.dumps(output, indent=2)
+
+    except Exception as e:
+        return f"Error calculating returns: {str(e)}"
+
+
+@mcp.tool()
+def optimize_portfolio(
+    symbols: list,
+    start_date: str,
+    end_date: str,
+    risk_free_rate: float = 0.02,
+    covariance_method: str = "sample_cov",
+    log_returns: bool = False,
+) -> str:
+    """
+    Perform Mean-Variance Optimization to find the maximum Sharpe ratio portfolio.
+
+    Args:
+        symbols: List of stock symbols (e.g., ['VCI', 'VNM', 'HPG'])
+        start_date: Start date in YYYY-MM-DD format (e.g., '2024-01-01')
+        end_date: End date in YYYY-MM-DD format (e.g., '2024-12-31')
+        risk_free_rate: Risk-free rate for Sharpe ratio calculation (default: 0.02)
+        covariance_method: Covariance matrix method - 'sample_cov', 'ledoit_wolf', 'exp_cov', 'semicovariance'
+        log_returns: Whether to use log returns (True) or arithmetic returns (False)
+
+    Returns:
+        JSON string with optimal weights and portfolio performance metrics
+    """
+    try:
+        import pandas as pd
+        import json
+
+        # Fetch and clean price data for multiple symbols
+        all_data = []
+        for symbol in symbols:
+            try:
+                # Initialize Quote object with VCI source
+                quote = Quote(symbol=symbol, source="VCI")
+                df = quote.history(start=start_date, end=end_date, interval="1D")
+
+                if df is None or df.empty:
+                    return f"No data found for {symbol} between {start_date} and {end_date}"
+
+                # Add symbol column and keep only close price
+                df_clean = df[["close"]].copy()
+                df_clean.columns = [symbol]
+                all_data.append(df_clean)
+
+            except Exception as e:
+                return f"Error fetching data for {symbol}: {str(e)}"
+
+        if not all_data:
+            return "No data found for any symbols"
+
+        # Merge all DataFrames on date index
+        combined_df = pd.concat(all_data, axis=1)
+
+        # Drop rows with any missing values
+        combined_df = combined_df.dropna()
+
+        if combined_df.empty:
+            return "No complete data available after cleaning missing values"
+
+        # Calculate expected returns using mean historical method
+        mu = expected_returns.mean_historical_return(
+            combined_df,
+            returns_data=False,
+            compounding=False,
+            frequency=252,
+            log_returns=log_returns,
+        )
+
+        # Calculate covariance matrix based on selected method
+        if covariance_method == "sample_cov":
+            S = risk_models.sample_cov(combined_df)
+        elif covariance_method == "ledoit_wolf":
+            S = risk_models.ledoit_wolf_shrinkage(combined_df)
+        elif covariance_method == "exp_cov":
+            S = risk_models.exp_cov(combined_df)
+        elif covariance_method == "semicovariance":
+            S = risk_models.semicovariance(combined_df)
+        else:
+            S = risk_models.sample_cov(combined_df)  # fallback to default
+
+        # Create Efficient Frontier object and run optimization
+        ef = EfficientFrontier(mu, S)
+        ef.max_sharpe(risk_free_rate=risk_free_rate)
+
+        # Get performance metrics
+        performance = ef.portfolio_performance(
+            verbose=False, risk_free_rate=risk_free_rate
+        )
+
+        # Clean weights and round to 4 decimal places
+        clean_weights = ef.clean_weights()
+        rounded_weights = {k: round(v, 4) for k, v in clean_weights.items()}
+
+        # Prepare comprehensive output
+        output = {
+            "symbols": symbols,
+            "start_date": start_date,
+            "end_date": end_date,
+            "optimization_type": "max_sharpe",
+            "risk_free_rate": risk_free_rate,
+            "covariance_method": covariance_method,
+            "log_returns": log_returns,
+            "optimal_weights": rounded_weights,
+            "performance_metrics": {
+                "expected_annual_return": round(performance[0], 6),
+                "annual_volatility": round(performance[1], 6),
+                "sharpe_ratio": round(performance[2], 6),
+            },
+        }
+
+        return json.dumps(output, indent=2)
+
+    except OptimizationError as e:
+        return f"Optimization failed: {str(e)}"
+    except Exception as e:
+        return f"Error optimizing portfolio: {str(e)}"
+
+
+@mcp.tool()
+def full_portfolio_optimization(
+    symbols: list,
+    start_date: str,
+    end_date: str,
+    risk_free_rate: float = 0.02,
+    risk_aversion: float = 1.0,
+    covariance_method: str = "sample_cov",
+    log_returns: bool = False,
+) -> str:
+    """
+    Perform comprehensive portfolio optimization with multiple strategies.
+
+    Args:
+        symbols: List of stock symbols (e.g., ['VCI', 'VNM', 'HPG'])
+        start_date: Start date in YYYY-MM-DD format (e.g., '2024-01-01')
+        end_date: End date in YYYY-MM-DD format (e.g., '2024-12-31')
+        risk_free_rate: Risk-free rate for Sharpe ratio calculation (default: 0.02)
+        risk_aversion: Risk aversion coefficient for utility optimization (default: 1.0)
+        covariance_method: Covariance matrix method - 'sample_cov', 'ledoit_wolf', 'exp_cov', 'semicovariance'
+        log_returns: Whether to use log returns (True) or arithmetic returns (False)
+
+    Returns:
+        JSON string with all three optimized portfolios and performance comparison
+    """
+    try:
+        import pandas as pd
+        import json
+
+        # Fetch and clean price data for multiple symbols
+        all_data = []
+        for symbol in symbols:
+            try:
+                # Initialize Quote object with VCI source
+                quote = Quote(symbol=symbol, source="VCI")
+                df = quote.history(start=start_date, end=end_date, interval="1D")
+
+                if df is None or df.empty:
+                    return f"No data found for {symbol} between {start_date} and {end_date}"
+
+                # Add symbol column and keep only close price
+                df_clean = df[["close"]].copy()
+                df_clean.columns = [symbol]
+                all_data.append(df_clean)
+
+            except Exception as e:
+                return f"Error fetching data for {symbol}: {str(e)}"
+
+        if not all_data:
+            return "No data found for any symbols"
+
+        # Merge all DataFrames on date index
+        combined_df = pd.concat(all_data, axis=1)
+
+        # Drop rows with any missing values
+        combined_df = combined_df.dropna()
+
+        if combined_df.empty:
+            return "No complete data available after cleaning missing values"
+
+        # Calculate expected returns using mean historical method
+        mu = expected_returns.mean_historical_return(
+            combined_df,
+            returns_data=False,
+            compounding=False,
+            frequency=252,
+            log_returns=log_returns,
+        )
+
+        # Calculate covariance matrix based on selected method
+        if covariance_method == "sample_cov":
+            S = risk_models.sample_cov(combined_df)
+        elif covariance_method == "ledoit_wolf":
+            S = risk_models.ledoit_wolf_shrinkage(combined_df)
+        elif covariance_method == "exp_cov":
+            S = risk_models.exp_cov(combined_df)
+        elif covariance_method == "semicovariance":
+            S = risk_models.semicovariance(combined_df)
+        else:
+            S = risk_models.sample_cov(combined_df)  # fallback to default
+
+        # Run all three optimization types
+        optimizations = {}
+
+        # Max Sharpe optimization
+        try:
+            ef_sharpe = EfficientFrontier(mu, S)
+            ef_sharpe.max_sharpe(risk_free_rate=risk_free_rate)
+            performance_sharpe = ef_sharpe.portfolio_performance(
+                verbose=False, risk_free_rate=risk_free_rate
+            )
+            clean_weights_sharpe = ef_sharpe.clean_weights()
+
+            optimizations["max_sharpe"] = {
+                "success": True,
+                "weights": {k: round(v, 4) for k, v in clean_weights_sharpe.items()},
+                "expected_annual_return": round(performance_sharpe[0], 6),
+                "annual_volatility": round(performance_sharpe[1], 6),
+                "sharpe_ratio": round(performance_sharpe[2], 6),
+                "optimization_type": "max_sharpe",
+            }
+        except OptimizationError as e:
+            optimizations["max_sharpe"] = {
+                "success": False,
+                "error": f"Max Sharpe optimization failed: {str(e)}",
+            }
+
+        # Minimum volatility optimization
+        try:
+            ef_minvol = EfficientFrontier(mu, S)
+            ef_minvol.min_volatility()
+            performance_minvol = ef_minvol.portfolio_performance(
+                verbose=False, risk_free_rate=risk_free_rate
+            )
+            clean_weights_minvol = ef_minvol.clean_weights()
+
+            optimizations["min_volatility"] = {
+                "success": True,
+                "weights": {k: round(v, 4) for k, v in clean_weights_minvol.items()},
+                "expected_annual_return": round(performance_minvol[0], 6),
+                "annual_volatility": round(performance_minvol[1], 6),
+                "sharpe_ratio": round(performance_minvol[2], 6),
+                "optimization_type": "min_volatility",
+            }
+        except OptimizationError as e:
+            optimizations["min_volatility"] = {
+                "success": False,
+                "error": f"Min volatility optimization failed: {str(e)}",
+            }
+
+        # Maximum utility optimization
+        try:
+            ef_utility = EfficientFrontier(mu, S)
+            ef_utility.max_quadratic_utility(risk_aversion=risk_aversion)
+            performance_utility = ef_utility.portfolio_performance(
+                verbose=False, risk_free_rate=risk_free_rate
+            )
+            clean_weights_utility = ef_utility.clean_weights()
+
+            optimizations["max_utility"] = {
+                "success": True,
+                "weights": {k: round(v, 4) for k, v in clean_weights_utility.items()},
+                "expected_annual_return": round(performance_utility[0], 6),
+                "annual_volatility": round(performance_utility[1], 6),
+                "sharpe_ratio": round(performance_utility[2], 6),
+                "optimization_type": "max_utility",
+            }
+        except OptimizationError as e:
+            optimizations["max_utility"] = {
+                "success": False,
+                "error": f"Max utility optimization failed: {str(e)}",
+            }
+
+        # Filter out failed optimizations for summary
+        successful_opts = [
+            k for k, v in optimizations.items() if v.get("success", False)
+        ]
+
+        # Prepare comprehensive output
+        output = {
+            "symbols": symbols,
+            "start_date": start_date,
+            "end_date": end_date,
+            "risk_free_rate": risk_free_rate,
+            "risk_aversion": risk_aversion,
+            "covariance_method": covariance_method,
+            "log_returns": log_returns,
+            "optimized_portfolios": optimizations,
+            "summary": {
+                "total_portfolios": len(successful_opts),
+                "successful_optimizations": successful_opts,
+            },
+        }
+
+        return json.dumps(output, indent=2)
+
+    except Exception as e:
+        return f"Error in full portfolio optimization: {str(e)}"
 
 
 if __name__ == "__main__":

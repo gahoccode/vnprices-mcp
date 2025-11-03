@@ -270,10 +270,11 @@ The server uses six data sources via vnstock3:
 - **Runtime**: Python 3.11 in Docker container
 - **Data Library**: vnstock3 3.2.0+
 - **Data Processing**: pandas 2.0.0+
+- **Portfolio Optimization**: PyPortfolioOpt 1.5.6+
 - **Transport**: stdio (Standard Input/Output)
-- **Deployment**: Docker containerized, ~1.2GB image size
+- **Deployment**: Docker containerized, ~1.7GB image size (v1.0.0+: increased from ~1.2GB)
 - **Architecture**: Stateless - each tool invocation creates a fresh container instance
-- **Total Tools**: 12 (4 price history + 4 financial statements + 1 dividend + 3 commodity/exchange)
+- **Total Tools**: 16 (4 price history + 3 portfolio optimization + 4 financial statements + 1 dividend + 1 company info + 3 commodity/exchange)
 
 ## Usage Patterns
 
@@ -332,6 +333,10 @@ Each tool call spawns an isolated Docker container running `vnprices-mcp:latest`
 - vnstock MSN Quote Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/msn/quote.py
 - vnstock Gold Price Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/misc/gold_price.py
 - vnstock Exchange Rate Source: https://github.com/thinh-vu/vnstock/blob/main/vnstock/explorer/misc/exchange_rate.py
+- PyPortfolioOpt Calculate Returns Guide: https://raw.githubusercontent.com/gahoccode/docs/refs/heads/main/optimize/pyportopt/returns/returns.md
+- PyPortfolioOpt Mean-Variance Optimization Guide: https://raw.githubusercontent.com/gahoccode/docs/refs/heads/main/optimize/pyportopt/mvo/mvo.md
+- PyPortfolioOpt Examples Guide: https://raw.githubusercontent.com/gahoccode/docs/refs/heads/main/optimize/pyportopt/examples/classic.md
+- PyPortfolioOpt Post-Processing Guide: https://raw.githubusercontent.com/gahoccode/docs/refs/heads/main/optimize/pyportopt/post/post.md
 - Model Context Protocol: https://modelcontextprotocol.io
 - MCP Python SDK: https://github.com/modelcontextprotocol/python-sdk
 - Docker MCP Gateway: https://github.com/docker/mcp-gateway
