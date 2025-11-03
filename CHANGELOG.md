@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-11-04
+
+### Added
+- **Fund Management Tools**: 6 new comprehensive mutual fund analysis tools
+  - `get_fund_listing` - List all available mutual funds with filtering by fund type (BALANCED, BOND, STOCK)
+  - `search_funds` - Search for mutual funds by symbol or partial name
+  - `get_fund_nav_report` - Get historical NAV report for specific mutual funds
+  - `get_fund_top_holdings` - Get top 10 holdings for specific mutual funds
+  - `get_fund_industry_allocation` - Get industry allocation breakdown for specific mutual funds
+  - `get_fund_asset_allocation` - Get asset allocation breakdown for specific mutual funds
+- **Fmarket Integration**: Added support for Vietnamese mutual fund data via Fmarket API
+- **Enhanced Documentation**: Added comprehensive fund management usage examples
+- **Troubleshooting Guide**: Created dedicated troubleshooting documentation in `docs/troubleshoot.md`
+- **Expanded Examples**: Added fund management queries to `examples/questions.md`
+
+### Changed
+- **Total Tools**: Increased from 16 to 22 tools (+6 fund management tools)
+- **Data Sources**: Added Fmarket as mutual fund data source
+- **Documentation Structure**: Improved organization with dedicated examples and troubleshooting sections
+- **README**: Updated tool count and descriptions for fund management capabilities
+
+### Technical
+- **Fund Library**: Integrated `vnstock.explorer.fmarket.fund.Fund` class for mutual fund data
+- **Stateless Design**: Fund tools follow existing MCP patterns with proper error handling
+- **JSON Output**: Consistent JSON string formatting for all fund data responses
+- **Case Handling**: Fund symbols converted to uppercase for consistency
+
+### Documentation
+- Created `docs/troubleshoot.md` with comprehensive troubleshooting guide
+- Enhanced `examples/questions.md` with fund management use cases
+- Updated README.md with fund management tools section
+- Added fund management examples and best practices
+
 ## [Unreleased]
 
 ## [1.0.0] - 2025-11-03

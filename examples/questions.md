@@ -168,3 +168,53 @@ Get VCB exchange rates for 2024-12-31
 ```
 Show me Vietcombank exchange rates for today
 ```
+
+## Fund Management
+
+### Fund Listing & Search
+```
+Show me all available mutual funds
+```
+
+```
+List all stock funds only
+```
+
+```
+Search for funds containing "DC" in their name
+```
+
+```
+Find balanced funds available in the market
+```
+
+### Fund Analysis
+```
+Get NAV history for SSISCA fund
+```
+
+```
+Show me top holdings of VESAF fund
+```
+
+```
+Get industry allocation for SSISCA fund
+```
+
+```
+Show me asset allocation breakdown for DCDS fund
+```
+
+### Fund Comparison & Insights
+
+```
+Compare top holdings between SSISCA and VESAF funds
+```
+
+```
+Show me funds with the best 3-year annualized performance
+```
+
+```
+Analyze industry allocation across different fund types
+```

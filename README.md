@@ -79,6 +79,27 @@ Fetch BTMC (Bảo Tín Minh Châu) gold prices (current only).
 #### 16. `get_vcb_exchange_rate`
 Fetch VCB (Vietcombank) exchange rates for a specific date.
 
+### Fund Management Tools
+
+#### 17. `get_fund_listing`
+Get list of all available mutual funds with filtering by fund type (BALANCED, BOND, STOCK).
+
+#### 18. `search_funds`
+Search for mutual funds by symbol or partial name.
+
+#### 19. `get_fund_nav_report`
+Get historical NAV report for a specific mutual fund.
+
+#### 20. `get_fund_top_holdings`
+Get top 10 holdings for a specific mutual fund.
+
+#### 21. `get_fund_industry_allocation`
+Get industry allocation breakdown for a specific mutual fund.
+
+#### 22. `get_fund_asset_allocation`
+Get asset allocation breakdown for a specific mutual fund.
+
+
 ## Prerequisites
 
 - **Docker Desktop** (or Docker Engine) - [Download Docker Desktop](https://docs.docker.com/get-started/get-docker/)
@@ -267,92 +288,6 @@ cat ~/.docker/mcp/catalogs/custom.yaml
 # 7. Restart Claude Desktop
 ```
 
-## Troubleshooting
-
-### Tools Not Appearing in Claude
-
-**Check 1: Verify config.yaml**
-```bash
-cat ~/.docker/mcp/config.yaml
-```
-Should show:
-```yaml
-servers:
-  vnprices:
-    enabled: true
-```
-
-**Check 2: View gateway logs**
-```bash
-docker ps | grep mcp-gateway
-docker logs -f <container-id>
-```
-
-Look for:
-- `Enabled servers: vnprices`
-- `4 tools listed`
-
-**Check 3: Verify image exists**
-```bash
-docker images | grep vnprices-mcp
-```
-
-**Check 4: Test manual gateway run**
-```bash
-docker run -i --rm \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -v ~/.docker/mcp:/mcp \
-  docker/mcp-gateway \
-  --catalog=/mcp/catalogs/custom.yaml \
-  --registry=/mcp/registry.yaml \
-  --config=/mcp/config.yaml \
-  --verbose
-```
-
-### Gateway Not Starting
-
-**Check Claude config syntax:**
-```bash
-# Validate JSON
-cat ~/Library/Application\ Support/Claude/claude_desktop_config.json | python3 -m json.tool
-```
-
-### Server Returns Errors
-
-**Check vnstock3 is working:**
-```bash
-# Test inside container
-docker run -it vnprices-mcp:latest python3 -c "from vnstock import Quote; print('OK')"
-```
-
-**View detailed server logs:**
-```bash
-docker logs <vnprices-container-id> --tail 100
-```
-
-### Build Fails on Wordcloud
-
-If you get wordcloud build errors:
-```bash
-# Check system dependencies are installed
-docker build --no-cache --progress=plain -t vnprices-mcp:latest . 2>&1 | grep -A 10 "wordcloud"
-
-#Check Dockerfile 
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
-    build-essential \
-    python3-dev \
-    libfreetype6-dev \
-    libpng-dev \
-    libjpeg-dev \
-    pkg-config \
-    && rm -rf /var/lib/apt/lists/*
-```
-
-The Dockerfile should already have all necessary dependencies.
-
 ## Development
 
 ### Project Structure
@@ -411,7 +346,7 @@ tools:
 - **PyPortfolioOpt**: 1.5.6+ (portfolio optimization)
 - **Transport**: stdio (Standard Input/Output)
 - **Container Size**: ~1.7GB (v1.0.0+: increased from ~1.2GB due to portfolio optimization libraries)
-- **Total Tools**: 16 (4 price history + 3 portfolio optimization + 4 financial statements + 1 dividend + 1 company info + 3 commodity/exchange)
+- **Total Tools**: 22 (4 price history + 3 portfolio optimization + 4 financial statements + 1 dividend + 1 company info + 3 commodity/exchange + 6 fund management)
 
 ## References
 
