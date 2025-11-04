@@ -292,3 +292,5 @@ print("Processing request")
 import logging
 logging.info("Processing request")
 ```
+- Use either serena or graphiti mcp to memorize things
+- For local MCP servers in development, the authentication approach differs significantly from production HTTP-based servers. According to the MCP specification, implementations using STDIO transport (the most common setup for local development) should NOT use OAuth flows, and instead should retrieve credentials from the environment
