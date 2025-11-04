@@ -292,3 +292,4 @@ print("Processing request")
 import logging
 logging.info("Processing request")
 ```
+- Use either serena or graphiti mcp to memorize things
