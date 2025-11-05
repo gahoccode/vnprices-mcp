@@ -130,7 +130,7 @@ def get_index_history(
     Args:
         symbol: Index symbol
                Vietnamese: 'VNINDEX', 'HNXINDEX', 'UPCOMINDEX'
-               International: 'DJI' (Dow Jones), 'SP500', etc.
+               International: 'DJI' (Dow Jones)
         start_date: Start date in YYYY-MM-DD format
         end_date: End date in YYYY-MM-DD format
         interval: Data interval - '1D' (daily), '1W' (weekly), '1M' (monthly)
@@ -496,7 +496,9 @@ def calculate_returns(
 
                 # Add symbol column and keep time and close price
                 df_clean = df[["time", "close"]].copy()
-                df_clean["time"] = pd.to_datetime(df_clean["time"])  # Convert to datetime
+                df_clean["time"] = pd.to_datetime(
+                    df_clean["time"]
+                )  # Convert to datetime
                 df_clean.set_index("time", inplace=True)  # Set as datetime index
                 df_clean.columns = [symbol]  # Rename close column to symbol name
                 all_data.append(df_clean)
@@ -583,7 +585,9 @@ def optimize_portfolio(
 
                 # Add symbol column and keep time and close price
                 df_clean = df[["time", "close"]].copy()
-                df_clean["time"] = pd.to_datetime(df_clean["time"])  # Convert to datetime
+                df_clean["time"] = pd.to_datetime(
+                    df_clean["time"]
+                )  # Convert to datetime
                 df_clean.set_index("time", inplace=True)  # Set as datetime index
                 df_clean.columns = [symbol]  # Rename close column to symbol name
                 all_data.append(df_clean)
@@ -704,7 +708,9 @@ def full_portfolio_optimization(
 
                 # Add symbol column and keep time and close price
                 df_clean = df[["time", "close"]].copy()
-                df_clean["time"] = pd.to_datetime(df_clean["time"])  # Convert to datetime
+                df_clean["time"] = pd.to_datetime(
+                    df_clean["time"]
+                )  # Convert to datetime
                 df_clean.set_index("time", inplace=True)  # Set as datetime index
                 df_clean.columns = [symbol]  # Rename close column to symbol name
                 all_data.append(df_clean)
@@ -845,6 +851,7 @@ def full_portfolio_optimization(
 
 
 # ========== Fund Management Tools ==========
+
 
 @mcp.tool()
 def get_fund_listing(fund_type: str = "") -> str:
@@ -998,8 +1005,6 @@ def get_fund_asset_allocation(symbol: str) -> str:
 
     except Exception as e:
         return f"Error fetching asset allocation for {symbol}: {str(e)}"
-
-
 
 
 if __name__ == "__main__":
