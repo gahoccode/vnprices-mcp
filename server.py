@@ -165,15 +165,15 @@ def get_index_history(
 @mcp.tool()
 def get_income_statement(symbol: str, lang: str = "en") -> str:
     """
-    Get annual income statement (profit & loss) for Vietnamese stocks.
+    Get annual income statement (profit & loss) for Vietnamese stocks with chronological year ordering.
 
     Args:
         symbol: Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
-        lang: Language - 'en' (English) or 'vi' (Vietnamese)
+        lang: Language - 'en' (English) or 'vi' (Vietnamese')
 
     Returns:
         JSON string with annual income statement data including revenue, expenses,
-        profit metrics, and earnings per share (EPS) for multiple years
+        profit metrics, and earnings per share (EPS) for multiple years, sorted chronologically
     """
     try:
         # Initialize stock with VCI source
@@ -186,6 +186,9 @@ def get_income_statement(symbol: str, lang: str = "en") -> str:
         if df is None or df.empty:
             return f"No income statement data found for {symbol}"
 
+        # Sort by yearReport for chronological analysis
+        df = df.sort_values('yearReport').reset_index(drop=True)
+
         # Convert to JSON
         return df.to_json(orient="records", date_format="iso", indent=2)
 
@@ -196,7 +199,7 @@ def get_income_statement(symbol: str, lang: str = "en") -> str:
 @mcp.tool()
 def get_balance_sheet(symbol: str, lang: str = "en") -> str:
     """
-    Get annual balance sheet for Vietnamese stocks.
+    Get annual balance sheet for Vietnamese stocks with chronological year ordering.
 
     Args:
         symbol: Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
@@ -204,7 +207,7 @@ def get_balance_sheet(symbol: str, lang: str = "en") -> str:
 
     Returns:
         JSON string with annual balance sheet data including assets, liabilities,
-        equity, and detailed financial position metrics for multiple years
+        equity, and detailed financial position metrics for multiple years, sorted chronologically
     """
     try:
         # Initialize stock with VCI source
@@ -217,6 +220,9 @@ def get_balance_sheet(symbol: str, lang: str = "en") -> str:
         if df is None or df.empty:
             return f"No balance sheet data found for {symbol}"
 
+        # Sort by yearReport for chronological analysis
+        df = df.sort_values('yearReport').reset_index(drop=True)
+
         # Convert to JSON
         return df.to_json(orient="records", date_format="iso", indent=2)
 
@@ -227,7 +233,7 @@ def get_balance_sheet(symbol: str, lang: str = "en") -> str:
 @mcp.tool()
 def get_cash_flow(symbol: str, lang: str = "en") -> str:
     """
-    Get annual cash flow statement for Vietnamese stocks.
+    Get annual cash flow statement for Vietnamese stocks with chronological year ordering.
 
     Args:
         symbol: Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
@@ -235,7 +241,7 @@ def get_cash_flow(symbol: str, lang: str = "en") -> str:
 
     Returns:
         JSON string with annual cash flow data including operating, investing,
-        and financing activities for multiple years
+        and financing activities for multiple years, sorted chronologically
     """
     try:
         # Initialize stock with VCI source
@@ -248,6 +254,9 @@ def get_cash_flow(symbol: str, lang: str = "en") -> str:
         if df is None or df.empty:
             return f"No cash flow data found for {symbol}"
 
+        # Sort by yearReport for chronological analysis
+        df = df.sort_values('yearReport').reset_index(drop=True)
+
         # Convert to JSON
         return df.to_json(orient="records", date_format="iso", indent=2)
 
@@ -258,7 +267,7 @@ def get_cash_flow(symbol: str, lang: str = "en") -> str:
 @mcp.tool()
 def get_financial_ratios(symbol: str, lang: str = "en") -> str:
     """
-    Get annual financial ratios and metrics for Vietnamese stocks.
+    Get annual financial ratios and metrics for Vietnamese stocks with chronological year ordering.
 
     Args:
         symbol: Stock ticker symbol (e.g., 'VCI', 'VNM', 'HPG')
@@ -266,7 +275,7 @@ def get_financial_ratios(symbol: str, lang: str = "en") -> str:
 
     Returns:
         JSON string with annual financial ratios including P/B (Price-to-Book),
-        ROE (Return on Equity), and other key financial health indicators
+        ROE (Return on Equity), and other key financial health indicators, sorted chronologically
     """
     try:
         # Initialize stock with VCI source
@@ -279,10 +288,14 @@ def get_financial_ratios(symbol: str, lang: str = "en") -> str:
         if df is None or df.empty:
             return f"No financial ratio data found for {symbol}"
 
-        # Flatten MultiIndex DataFrame before converting to JSON
+        # Flatten MultiIndex DataFrame first, then sort chronologically
         flattened_df = flatten_hierarchical_index(
             df, separator="_", handle_duplicates=True, drop_levels=0
         )
+
+        # Sort flattened DataFrame by yearReport for chronological analysis
+        if 'yearReport' in flattened_df.columns:
+            flattened_df = flattened_df.sort_values('yearReport').reset_index(drop=True)
 
         # Convert to JSON
         return flattened_df.to_json(orient="records", date_format="iso", indent=2)

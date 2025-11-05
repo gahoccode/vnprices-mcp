@@ -296,3 +296,5 @@ logging.info("Processing request")
 - Use either serena or graphiti mcp to memorize things
 - For local MCP servers in development, the authentication approach differs significantly from production HTTP-based servers. According to the MCP specification, implementations using STDIO transport (the most common setup for local development) should NOT use OAuth flows, and instead should retrieve credentials from the environment
 - set all ['time'] column in the vnstock library to be datetime index
+- ['yearReport'] for financial statements and financial ratios don't have to be datetime, because it only has the years in it with int64 dtype, just ensure they're in the consistent and correct chronological order for analysis. 
+- Financial Ratios by default: Returns years in reverse order [2024, 2023, 2022, ... , 2011] which requires transformation before analysis
