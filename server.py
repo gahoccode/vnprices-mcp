@@ -494,9 +494,11 @@ def calculate_returns(
                 if df is None or df.empty:
                     return f"No data found for {symbol} between {start_date} and {end_date}"
 
-                # Add symbol column and keep only close price
-                df_clean = df[["close"]].copy()
-                df_clean.columns = [symbol]
+                # Add symbol column and keep time and close price
+                df_clean = df[["time", "close"]].copy()
+                df_clean["time"] = pd.to_datetime(df_clean["time"])  # Convert to datetime
+                df_clean.set_index("time", inplace=True)  # Set as datetime index
+                df_clean.columns = [symbol]  # Rename close column to symbol name
                 all_data.append(df_clean)
 
             except Exception as e:
@@ -579,9 +581,11 @@ def optimize_portfolio(
                 if df is None or df.empty:
                     return f"No data found for {symbol} between {start_date} and {end_date}"
 
-                # Add symbol column and keep only close price
-                df_clean = df[["close"]].copy()
-                df_clean.columns = [symbol]
+                # Add symbol column and keep time and close price
+                df_clean = df[["time", "close"]].copy()
+                df_clean["time"] = pd.to_datetime(df_clean["time"])  # Convert to datetime
+                df_clean.set_index("time", inplace=True)  # Set as datetime index
+                df_clean.columns = [symbol]  # Rename close column to symbol name
                 all_data.append(df_clean)
 
             except Exception as e:
@@ -698,9 +702,11 @@ def full_portfolio_optimization(
                 if df is None or df.empty:
                     return f"No data found for {symbol} between {start_date} and {end_date}"
 
-                # Add symbol column and keep only close price
-                df_clean = df[["close"]].copy()
-                df_clean.columns = [symbol]
+                # Add symbol column and keep time and close price
+                df_clean = df[["time", "close"]].copy()
+                df_clean["time"] = pd.to_datetime(df_clean["time"])  # Convert to datetime
+                df_clean.set_index("time", inplace=True)  # Set as datetime index
+                df_clean.columns = [symbol]  # Rename close column to symbol name
                 all_data.append(df_clean)
 
             except Exception as e:

@@ -24,3 +24,8 @@ pyportfolioopt>=1.5.6
 osqp>=0.6.0  # Quadratic programming solver (required by pyportfolioopt)
 
 IPython
+
+# Testing dependencies
+pytest>=7.0.0
+pytest-mock>=3.10.0
+pytest-cov>=4.0.0
